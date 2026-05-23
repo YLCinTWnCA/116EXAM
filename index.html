@@ -298,6 +298,89 @@
     color: #fff;
   }
 
+  /* 章節自訂編輯 */
+  .sub-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .sub-section-header .sub-section-title {
+    border: none; margin: 0; padding: 0;
+  }
+  .edit-toggle {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.75);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .edit-toggle:hover { background: rgba(255,255,255,0.18); color: #fff; }
+  .edit-area {
+    padding: 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    border: 1px solid rgba(109,213,237,0.25);
+  }
+  .edit-hint {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+  .edit-textarea {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.7;
+    resize: vertical;
+    min-height: 200px;
+    box-sizing: border-box;
+  }
+  .edit-textarea:focus { outline: none; border-color: rgba(109,213,237,0.5); }
+  .edit-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .edit-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .edit-btn:hover { background: rgba(255,255,255,0.2); }
+  .edit-btn.save {
+    background: #6dd5ed;
+    color: #0f2027;
+    border-color: #6dd5ed;
+    font-weight: 600;
+  }
+  .edit-btn.save:hover { background: #4a90c2; color: #fff; }
+  .edit-btn.reset {
+    border-color: rgba(255,180,80,0.4);
+    color: #ffd1a8;
+  }
+  .edit-btn.reset:hover { background: rgba(255,180,80,0.2); }
+
   @media (max-width: 520px) {
     .unit-row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; }
     .unit-checks { align-self: flex-end; }
@@ -2622,14 +2705,42 @@ let textbookVersion = {};
 try { textbookVersion = JSON.parse(localStorage.getItem("textbookVersion") || "{}"); }
 catch (e) { textbookVersion = {}; }
 function saveTextbookVersion() { localStorage.setItem("textbookVersion", JSON.stringify(textbookVersion)); }
+// 自訂章節:每個 (科目, 版本) 一份覆寫
+let customUnits = {};
+try { customUnits = JSON.parse(localStorage.getItem("customUnits") || "{}"); }
+catch (e) { customUnits = {}; }
+function saveCustomUnits() { localStorage.setItem("customUnits", JSON.stringify(customUnits)); }
+function currentVersion(subject) { return textbookVersion[subject] || "通用"; }
+function getCustomUnits(subject, version) {
+  return customUnits[subject] && customUnits[subject][version];
+}
+function setCustomUnits(subject, version, units) {
+  if (!customUnits[subject]) customUnits[subject] = {};
+  customUnits[subject][version] = units;
+  saveCustomUnits();
+}
+function clearCustomUnits(subject, version) {
+  if (customUnits[subject]) {
+    delete customUnits[subject][version];
+    if (Object.keys(customUnits[subject]).length === 0) delete customUnits[subject];
+    saveCustomUnits();
+  }
+}
+function hasCustomUnits(subject, version) {
+  const c = customUnits[subject] && customUnits[subject][version];
+  return Array.isArray(c) && c.length > 0;
+}
 function getUnits(subject) {
-  const v = textbookVersion[subject];
-  if (v && v !== "通用") {
+  const v = currentVersion(subject);
+  const custom = getCustomUnits(subject, v);
+  if (Array.isArray(custom) && custom.length > 0) return custom;
+  if (v !== "通用") {
     const pd = STUDY_PLAN_BY_VERSION[v];
     if (pd && Array.isArray(pd[subject]) && pd[subject].length > 0) return pd[subject];
   }
   return STUDY_PLAN_GENERIC[subject];
 }
+let editingSubject = null;
 function hasPublisherData(publisher, subject) {
   if (publisher === "通用") return true;
   const pd = STUDY_PLAN_BY_VERSION[publisher];
@@ -2744,56 +2855,126 @@ function renderDetail(group) {
   for (const subj of subjs) {
     const section = document.createElement("div");
     section.className = "sub-section";
+
+    // 標題列(科目名 + 編輯按鈕)
+    const header = document.createElement("div");
+    header.className = "sub-section-header";
+    const titleText = document.createElement("div");
+    titleText.className = "sub-section-title";
+    const v = currentVersion(subj);
+    const isCustom = hasCustomUnits(subj, v);
     if (subjs.length > 1) {
-      const h = document.createElement("div");
-      h.className = "sub-section-title";
       const ss = subjectStats(subj);
-      h.textContent = subj + "  " + ss.done + "/" + ss.total;
-      section.appendChild(h);
+      titleText.textContent = subj + "  " + ss.done + "/" + ss.total + (isCustom ? "  ★自訂" : "");
+    } else {
+      titleText.textContent = isCustom ? "★ 自訂章節" : "";
     }
-    const list = document.createElement("div");
-    list.className = "unit-list";
-    STUDY_PLAN[subj].forEach((unit, ui) => {
-      const row = document.createElement("div");
-      row.className = "unit-row";
-      const name = document.createElement("div");
-      name.className = "unit-name";
-      name.textContent = unit;
-      name.title = "點一下加 1 次複習";
-      name.onclick = () => {
-        for (let i = 0; i < REVIEW_COUNT; i++) {
-          if (!getCheck(subj, ui, i)) {
-            setCheck(subj, ui, i, true);
-            renderStudyPlan();
-            return;
-          }
+    header.appendChild(titleText);
+    const editBtn = document.createElement("button");
+    editBtn.className = "edit-toggle";
+    editBtn.textContent = editingSubject === subj ? "✕ 取消" : "✏️ 編輯章節";
+    editBtn.onclick = () => {
+      editingSubject = editingSubject === subj ? null : subj;
+      renderStudyPlan();
+    };
+    header.appendChild(editBtn);
+    section.appendChild(header);
+
+    if (editingSubject === subj) {
+      // 編輯模式
+      const editArea = document.createElement("div");
+      editArea.className = "edit-area";
+      const hint = document.createElement("div");
+      hint.className = "edit-hint";
+      hint.innerHTML = '每行一個章節,可任意新增/修改/刪除/拉動順序。<br>'
+        + '⚠️ 改完後勾選進度依「位置」對應,若刪除/插入會錯位 — 建議改完到下方按「清除本科勾選」重來。';
+      editArea.appendChild(hint);
+      const ta = document.createElement("textarea");
+      ta.className = "edit-textarea";
+      ta.value = getUnits(subj).join("\n");
+      ta.rows = Math.max(12, Math.min(30, getUnits(subj).length + 2));
+      editArea.appendChild(ta);
+      const btnRow = document.createElement("div");
+      btnRow.className = "edit-btns";
+      const saveBtn = document.createElement("button");
+      saveBtn.className = "edit-btn save";
+      saveBtn.textContent = "💾 儲存";
+      saveBtn.onclick = () => {
+        const lines = ta.value.split("\n").map(s => s.trim()).filter(Boolean);
+        if (lines.length === 0) {
+          alert("至少要留一行,不然就按下方「重置為原版」清掉自訂。");
+          return;
         }
+        setCustomUnits(subj, v, lines);
+        editingSubject = null;
+        renderStudyPlan();
       };
-      row.appendChild(name);
-      const checks = document.createElement("div");
-      checks.className = "unit-checks";
-      const removeOne = () => {
-        // 從右往左找第一個已勾選的清掉
-        for (let i = REVIEW_COUNT - 1; i >= 0; i--) {
-          if (getCheck(subj, ui, i)) {
-            setCheck(subj, ui, i, false);
+      btnRow.appendChild(saveBtn);
+      const cancelBtn = document.createElement("button");
+      cancelBtn.className = "edit-btn";
+      cancelBtn.textContent = "取消";
+      cancelBtn.onclick = () => { editingSubject = null; renderStudyPlan(); };
+      btnRow.appendChild(cancelBtn);
+      if (isCustom) {
+        const resetBtn = document.createElement("button");
+        resetBtn.className = "edit-btn reset";
+        resetBtn.textContent = "🔄 重置為原版";
+        resetBtn.onclick = () => {
+          if (confirm("確定清掉「" + subj + "」(" + v + "版)的自訂章節,改回原版?")) {
+            clearCustomUnits(subj, v);
+            editingSubject = null;
             renderStudyPlan();
-            return;
           }
-        }
-      };
-      for (let i = 0; i < REVIEW_COUNT; i++) {
-        const checked = getCheck(subj, ui, i);
-        const c = document.createElement("div");
-        c.className = "check" + (checked ? " checked" : "");
-        c.title = "點一下減 1 次複習";
-        c.onclick = removeOne;
-        checks.appendChild(c);
+        };
+        btnRow.appendChild(resetBtn);
       }
-      row.appendChild(checks);
-      list.appendChild(row);
-    });
-    section.appendChild(list);
+      editArea.appendChild(btnRow);
+      section.appendChild(editArea);
+    } else {
+      // 正常模式 — 渲染單元列表
+      const list = document.createElement("div");
+      list.className = "unit-list";
+      getUnits(subj).forEach((unit, ui) => {
+        const row = document.createElement("div");
+        row.className = "unit-row";
+        const name = document.createElement("div");
+        name.className = "unit-name";
+        name.textContent = unit;
+        name.title = "點一下加 1 次複習";
+        name.onclick = () => {
+          for (let i = 0; i < REVIEW_COUNT; i++) {
+            if (!getCheck(subj, ui, i)) {
+              setCheck(subj, ui, i, true);
+              renderStudyPlan();
+              return;
+            }
+          }
+        };
+        row.appendChild(name);
+        const checks = document.createElement("div");
+        checks.className = "unit-checks";
+        const removeOne = () => {
+          for (let i = REVIEW_COUNT - 1; i >= 0; i--) {
+            if (getCheck(subj, ui, i)) {
+              setCheck(subj, ui, i, false);
+              renderStudyPlan();
+              return;
+            }
+          }
+        };
+        for (let i = 0; i < REVIEW_COUNT; i++) {
+          const checked = getCheck(subj, ui, i);
+          const c = document.createElement("div");
+          c.className = "check" + (checked ? " checked" : "");
+          c.title = "點一下減 1 次複習";
+          c.onclick = removeOne;
+          checks.appendChild(c);
+        }
+        row.appendChild(checks);
+        list.appendChild(row);
+      });
+      section.appendChild(list);
+    }
     $content.appendChild(section);
   }
 }
