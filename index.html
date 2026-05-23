@@ -10,15 +10,14 @@
   body {
     font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", "Helvetica Neue", sans-serif;
     background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    background-attachment: fixed;
     color: #fff;
     min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: calc(env(safe-area-inset-top, 0) + 32px) calc(env(safe-area-inset-right, 0) + 24px) calc(env(safe-area-inset-bottom, 0) + 32px) calc(env(safe-area-inset-left, 0) + 24px);
+    min-height: 100dvh;
+    padding: calc(env(safe-area-inset-top, 0px) + 32px) calc(env(safe-area-inset-right, 0px) + 24px) calc(env(safe-area-inset-bottom, 0px) + 48px) calc(env(safe-area-inset-left, 0px) + 24px);
     -webkit-font-smoothing: antialiased;
   }
-  .app { text-align: center; max-width: 680px; width: 100%; }
+  .app { text-align: center; max-width: 680px; width: 100%; margin: 0 auto; }
   .label { font-size: 16px; letter-spacing: 0.25em; opacity: 0.78; margin-bottom: 18px; }
   .countdown { display: flex; align-items: baseline; justify-content: center; gap: 14px; margin-bottom: 14px; }
   .days {
