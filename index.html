@@ -70,6 +70,89 @@
   .check.checked::after { content: "✓"; color: #0f2027; font-size: 15px; font-weight: 800; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); line-height: 1; }
   .reset-btn { display: block; margin: 22px auto 0; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-family: inherit; }
   .reset-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+
+  /* 首頁科目卡片 */
+  .subject-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .subject-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 22px 16px 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: inherit;
+    font-family: inherit;
+  }
+  .subject-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.28);
+    transform: translateY(-2px);
+  }
+  .subject-card-name {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+  .subject-card-pct {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(180deg, #ffffff 0%, #a8c8ff 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .subject-card-count {
+    font-size: 11px;
+    opacity: 0.5;
+    margin-bottom: 10px;
+  }
+  .subject-card-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .subject-card-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6dd5ed 0%, #4a90c2 100%);
+    transition: width 0.35s ease;
+  }
+  /* 細節 header */
+  .back-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .back-btn:hover { background: rgba(255,255,255,0.18); }
+  .detail-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+  }
+  .detail-title { font-size: 22px; font-weight: 700; letter-spacing: 0.2em; }
+  .detail-progress { font-size: 12px; opacity: 0.7; }
+  .sub-section { margin-top: 22px; }
+  .sub-section:first-child { margin-top: 0; }
+  .sub-section-title {
+    font-size: 13px; opacity: 0.7;
+    padding-bottom: 6px; margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    letter-spacing: 0.2em;
+  }
+  .hidden { display: none !important; }
+
   @media (max-width: 520px) {
     .unit-row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; }
     .unit-checks { align-self: flex-end; }
@@ -90,12 +173,24 @@
     <div class="divider"></div>
     <div class="study-section">
       <div class="study-title">讀書計畫</div>
-      <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar"></div></div>
-      <div class="progress-text" id="progress-text">總進度 0 / 0</div>
-      <div class="subject-tabs" id="subject-tabs"></div>
-      <div class="subject-progress-text" id="subject-progress-text"></div>
-      <div class="unit-list" id="unit-list"></div>
-      <button class="reset-btn" id="reset-btn">清除本科勾選</button>
+
+      <!-- 首頁:5 科卡片 -->
+      <div id="subject-grid-view">
+        <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar"></div></div>
+        <div class="progress-text" id="progress-text">總進度 0 / 0</div>
+        <div class="subject-grid" id="subject-grid"></div>
+      </div>
+
+      <!-- 細節:點科目後 -->
+      <div id="subject-detail-view" class="hidden">
+        <button class="back-btn" id="back-btn">← 回到全部科目</button>
+        <div class="detail-header">
+          <div class="detail-title" id="detail-title"></div>
+          <div class="detail-progress" id="detail-progress"></div>
+        </div>
+        <div id="detail-content"></div>
+        <button class="reset-btn" id="reset-btn">清除本科勾選</button>
+      </div>
     </div>
 
     <div class="settings">
@@ -506,7 +601,7 @@ const QUOTES = [
   "加油,還剩這幾天,你撐得住。"
 ];
 
-const DEFAULT_TARGET = "2027-05-15"; // 116 學年度國中教育會考預估日(可下方修改)
+const DEFAULT_TARGET = "2027-05-22"; // 116 學年度國中教育會考預估日(可下方修改)
 
 function getTarget() {
   return localStorage.getItem("examDate") || DEFAULT_TARGET;
@@ -658,7 +753,16 @@ const STUDY_PLAN = {
   ]
 };
 const REVIEW_COUNT = 5;
-let currentSubject = localStorage.getItem("currentSubject") || "國文";
+// 5 大科:自然=生物+理化+地科,社會=歷史+地理+公民
+const DISPLAY_GROUPS = {
+  "國語": ["國文"],
+  "數學": ["數學"],
+  "英文": ["英文"],
+  "自然": ["生物", "理化", "地科"],
+  "社會": ["歷史", "地理", "公民"]
+};
+let currentView = localStorage.getItem("currentView") || "home";
+if (currentView !== "home" && !DISPLAY_GROUPS[currentView]) currentView = "home";
 
 function loadProgress() {
   try { return JSON.parse(localStorage.getItem("studyProgress") || "{}"); }
@@ -687,6 +791,14 @@ function subjectStats(subj) {
   }
   return { total, done, pct: total ? Math.round(done*100/total) : 0 };
 }
+function groupStats(group) {
+  let total = 0, done = 0;
+  for (const subj of DISPLAY_GROUPS[group]) {
+    const s = subjectStats(subj);
+    total += s.total; done += s.done;
+  }
+  return { total, done, pct: total ? Math.round(done*100/total) : 0 };
+}
 function overallStats() {
   let total = 0, done = 0;
   for (const subj of Object.keys(STUDY_PLAN)) {
@@ -695,60 +807,109 @@ function overallStats() {
   }
   return { total, done, pct: total ? Math.round(done*100/total) : 0 };
 }
-function renderStudyPlan() {
+
+function renderHome() {
+  document.getElementById("subject-grid-view").classList.remove("hidden");
+  document.getElementById("subject-detail-view").classList.add("hidden");
+
   const overall = overallStats();
   document.getElementById("progress-bar").style.width = overall.pct + "%";
   document.getElementById("progress-text").textContent =
     "總進度 " + overall.done + " / " + overall.total + " 次  (" + overall.pct + "%)";
 
-  const $tabs = document.getElementById("subject-tabs");
-  $tabs.innerHTML = "";
-  for (const subj of Object.keys(STUDY_PLAN)) {
-    const sp = subjectStats(subj);
-    const btn = document.createElement("button");
-    btn.className = "tab" + (subj === currentSubject ? " active" : "");
-    btn.textContent = subj + " " + sp.pct + "%";
-    btn.onclick = () => {
-      currentSubject = subj;
-      localStorage.setItem("currentSubject", subj);
+  const $grid = document.getElementById("subject-grid");
+  $grid.innerHTML = "";
+  for (const group of Object.keys(DISPLAY_GROUPS)) {
+    const gs = groupStats(group);
+    const card = document.createElement("button");
+    card.className = "subject-card";
+    card.innerHTML =
+      '<div class="subject-card-name">' + group + '</div>' +
+      '<div class="subject-card-pct">' + gs.pct + '%</div>' +
+      '<div class="subject-card-count">' + gs.done + ' / ' + gs.total + ' 次</div>' +
+      '<div class="subject-card-bar"><div class="subject-card-bar-fill" style="width:' + gs.pct + '%"></div></div>';
+    card.onclick = () => {
+      currentView = group;
+      localStorage.setItem("currentView", group);
       renderStudyPlan();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
-    $tabs.appendChild(btn);
+    $grid.appendChild(card);
   }
-  const sp = subjectStats(currentSubject);
-  document.getElementById("subject-progress-text").textContent =
-    currentSubject + ":" + sp.done + " / " + sp.total + " 次";
-
-  const $list = document.getElementById("unit-list");
-  $list.innerHTML = "";
-  const units = STUDY_PLAN[currentSubject];
-  units.forEach((unit, ui) => {
-    const row = document.createElement("div");
-    row.className = "unit-row";
-    const name = document.createElement("div");
-    name.className = "unit-name";
-    name.textContent = unit;
-    row.appendChild(name);
-    const checks = document.createElement("div");
-    checks.className = "unit-checks";
-    for (let i = 0; i < REVIEW_COUNT; i++) {
-      const checked = getCheck(currentSubject, ui, i);
-      const c = document.createElement("div");
-      c.className = "check" + (checked ? " checked" : "");
-      c.title = "第 " + (i+1) + " 次複習";
-      c.onclick = () => {
-        setCheck(currentSubject, ui, i, !checked);
-        renderStudyPlan();
-      };
-      checks.appendChild(c);
-    }
-    row.appendChild(checks);
-    $list.appendChild(row);
-  });
 }
+
+function renderDetail(group) {
+  document.getElementById("subject-grid-view").classList.add("hidden");
+  document.getElementById("subject-detail-view").classList.remove("hidden");
+
+  const gs = groupStats(group);
+  document.getElementById("detail-title").textContent = group;
+  document.getElementById("detail-progress").textContent =
+    gs.done + " / " + gs.total + " 次  (" + gs.pct + "%)";
+
+  const $content = document.getElementById("detail-content");
+  $content.innerHTML = "";
+  const subjs = DISPLAY_GROUPS[group];
+  for (const subj of subjs) {
+    const section = document.createElement("div");
+    section.className = "sub-section";
+    if (subjs.length > 1) {
+      const h = document.createElement("div");
+      h.className = "sub-section-title";
+      const ss = subjectStats(subj);
+      h.textContent = subj + "  " + ss.done + "/" + ss.total;
+      section.appendChild(h);
+    }
+    const list = document.createElement("div");
+    list.className = "unit-list";
+    STUDY_PLAN[subj].forEach((unit, ui) => {
+      const row = document.createElement("div");
+      row.className = "unit-row";
+      const name = document.createElement("div");
+      name.className = "unit-name";
+      name.textContent = unit;
+      row.appendChild(name);
+      const checks = document.createElement("div");
+      checks.className = "unit-checks";
+      for (let i = 0; i < REVIEW_COUNT; i++) {
+        const checked = getCheck(subj, ui, i);
+        const c = document.createElement("div");
+        c.className = "check" + (checked ? " checked" : "");
+        c.title = "第 " + (i+1) + " 次複習";
+        c.onclick = () => {
+          setCheck(subj, ui, i, !checked);
+          renderStudyPlan();
+        };
+        checks.appendChild(c);
+      }
+      row.appendChild(checks);
+      list.appendChild(row);
+    });
+    section.appendChild(list);
+    $content.appendChild(section);
+  }
+}
+
+function renderStudyPlan() {
+  if (currentView === "home" || !DISPLAY_GROUPS[currentView]) {
+    renderHome();
+  } else {
+    renderDetail(currentView);
+  }
+}
+
+document.getElementById("back-btn").addEventListener("click", () => {
+  currentView = "home";
+  localStorage.setItem("currentView", "home");
+  renderStudyPlan();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 document.getElementById("reset-btn").addEventListener("click", () => {
-  if (confirm("確定要清除「" + currentSubject + "」的所有勾選嗎?")) {
-    delete progress[currentSubject];
+  if (currentView === "home" || !DISPLAY_GROUPS[currentView]) return;
+  if (confirm("確定要清除「" + currentView + "」的所有勾選嗎?")) {
+    for (const subj of DISPLAY_GROUPS[currentView]) {
+      delete progress[subj];
+    }
     saveProgress(progress);
     renderStudyPlan();
   }
