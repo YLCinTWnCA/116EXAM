@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>國中會考倒數</title>
+<style>
+  *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", "Helvetica Neue", sans-serif;
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app { text-align: center; max-width: 680px; width: 100%; }
+  .label { font-size: 16px; letter-spacing: 0.25em; opacity: 0.78; margin-bottom: 18px; }
+  .countdown { display: flex; align-items: baseline; justify-content: center; gap: 14px; margin-bottom: 14px; }
+  .days {
+    font-size: clamp(96px, 22vw, 220px); font-weight: 800; line-height: 1;
+    background: linear-gradient(180deg, #ffffff 0%, #a8c8ff 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    letter-spacing: -0.02em;
+  }
+  .unit { font-size: 28px; opacity: 0.9; }
+  .target { font-size: 13px; opacity: 0.55; margin-bottom: 32px; }
+  .quote {
+    font-size: clamp(18px, 4vw, 22px); line-height: 1.85;
+    padding: 28px 24px; background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12); border-radius: 18px;
+    margin-bottom: 24px; font-weight: 500;
+  }
+  .settings { margin-top: 32px; font-size: 13px; opacity: 0.7; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; }
+  .settings label { opacity: 0.7; }
+  .settings input {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 13px; font-family: inherit;
+    color-scheme: dark;
+  }
+  .settings button {
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+    color: #fff; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13px;
+  }
+  .settings button:hover { background: rgba(255,255,255,0.25); }
+  .meta { margin-top: 14px; font-size: 11px; opacity: 0.4; }
+
+  .divider { height: 1px; background: rgba(255,255,255,0.08); margin: 44px 0 32px; }
+  .study-section { text-align: left; }
+  .study-title { font-size: 14px; opacity: 0.85; margin-bottom: 14px; text-align: center; letter-spacing: 0.3em; }
+  .progress-bar-bg { height: 10px; background: rgba(255,255,255,0.08); border-radius: 5px; overflow: hidden; margin: 0 auto 8px; max-width: 480px; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, #6dd5ed 0%, #4a90c2 100%); transition: width 0.35s ease; width: 0%; }
+  .progress-text { text-align: center; font-size: 12px; opacity: 0.7; margin-bottom: 18px; }
+  .subject-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; justify-content: center; }
+  .tab { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 6px 12px; border-radius: 16px; cursor: pointer; font-family: inherit; font-size: 12px; opacity: 0.78; }
+  .tab.active { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.4); opacity: 1; font-weight: 600; }
+  .subject-progress-text { text-align: center; font-size: 11px; opacity: 0.5; margin-bottom: 12px; }
+  .unit-list { display: flex; flex-direction: column; gap: 5px; }
+  .unit-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; background: rgba(255,255,255,0.04); border-radius: 8px; gap: 12px; transition: background 0.15s; }
+  .unit-row:hover { background: rgba(255,255,255,0.07); }
+  .unit-name { font-size: 13.5px; flex: 1; line-height: 1.4; }
+  .unit-checks { display: flex; gap: 5px; flex-shrink: 0; }
+  .check { width: 22px; height: 22px; border-radius: 5px; border: 1.5px solid rgba(255,255,255,0.3); cursor: pointer; transition: all 0.15s; user-select: none; position: relative; }
+  .check:hover { border-color: rgba(255,255,255,0.6); }
+  .check.checked { background: #6dd5ed; border-color: #6dd5ed; }
+  .check.checked::after { content: "✓"; color: #0f2027; font-size: 15px; font-weight: 800; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); line-height: 1; }
+  .reset-btn { display: block; margin: 22px auto 0; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-family: inherit; }
+  .reset-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+  @media (max-width: 520px) {
+    .unit-row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; }
+    .unit-checks { align-self: flex-end; }
+    .check { width: 26px; height: 26px; }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="label" id="label">距離國中教育會考還有</div>
+    <div class="countdown">
+      <div class="days" id="days">--</div>
+      <div class="unit" id="unit">天</div>
+    </div>
+    <div class="target" id="target"></div>
+    <div class="quote" id="quote">—</div>
+
+    <div class="divider"></div>
+    <div class="study-section">
+      <div class="study-title">讀書計畫</div>
+      <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar"></div></div>
+      <div class="progress-text" id="progress-text">總進度 0 / 0</div>
+      <div class="subject-tabs" id="subject-tabs"></div>
+      <div class="subject-progress-text" id="subject-progress-text"></div>
+      <div class="unit-list" id="unit-list"></div>
+      <button class="reset-btn" id="reset-btn">清除本科勾選</button>
+    </div>
+
+    <div class="settings">
+      <label for="date-input">會考日期</label>
+      <input type="date" id="date-input">
+      <button id="save-btn">儲存</button>
+    </div>
+    <div class="meta" id="meta"></div>
+  </div>
+<script>
+const QUOTES = [
+  "你已經比昨天的自己更接近終點了。",
+  "一頁一頁讀,一題一題寫,未來就在那邊等你。",
+  "慢慢來,比較快。",
+  "今天的努力,是明天放榜時的底氣。",
+  "不必完美,只要前進。",
+  "寫錯沒關係,學會就賺到。",
+  "你的努力,會考考卷會看見。",
+  "累了就休息五分鐘,但不要停下來。",
+  "不怕慢,只怕站。",
+  "每一個解出來的題目,都是你的盔甲。",
+  "你不是一個人在戰鬥。",
+  "把不會的變會,就是進步。",
+  "焦慮不會幫你拿分,做題會。",
+  "今天讀的,明天就是你的。",
+  "別小看每一個五分鐘。",
+  "進度條只能自己拉。",
+  "看不懂沒關係,再看一次。",
+  "你撐到現在已經很厲害了。",
+  "想哭就哭,哭完繼續寫。",
+  "別跟別人比,跟昨天的自己比。",
+  "慢慢讀進去的東西最扎實。",
+  "累的時候,看看離終點還有多遠。",
+  "寫不出來,翻課本不丟臉。",
+  "把錯題收集起來,就是你的寶藏。",
+  "一次只專心一件事。",
+  "不要邊讀邊滑手機,真的不要。",
+  "睡飽再讀,比熬夜有效率。",
+  "三餐好好吃,大腦才會轉。",
+  "喝水。真的。記得喝水。",
+  "緊張是正常的,代表你在乎。",
+  "你已經知道的,比你以為的還多。",
+  "沒讀完是常態,不用自責。",
+  "比起讀新的,複習舊的更划算。",
+  "一張紙、一支筆,就是你的全世界。",
+  "把目標寫下來,寫在最顯眼的地方。",
+  "不會的題目,做記號,等下再回來。",
+  "答案卷別忘了畫。",
+  "准考證提早準備好。",
+  "進考場前深呼吸三次。",
+  "你已經練過上千題了,不怕的。",
+  "看到題目先笑一下,放鬆。",
+  "一個科目寫不好,下一科繼續拚。",
+  "不要交白卷,猜也要猜一個。",
+  "時間不夠就先寫會的。",
+  "寫完檢查兩次,不是一次。",
+  "字寫工整一點,分數會給你。",
+  "作文先列大綱,再下筆。",
+  "數學公式背熟,考試會輕鬆。",
+  "英文單字每天背十個。",
+  "國文古文多讀幾遍,順了就懂了。",
+  "「不經一番寒徹骨,怎得梅花撲鼻香。」——你現在就是在熬那場寒。",
+  "「天行健,君子以自強不息。」——今天的你也要自強。",
+  "「千里之行,始於足下。」——從這一頁開始。",
+  "「業精於勤,荒於嬉。」——勤奮從不會背叛你。",
+  "「讀書破萬卷,下筆如有神。」——累積到了,自然就會了。",
+  "「鍥而不舍,金石可鏤。」——你也是在雕刻自己。",
+  "「寶劍鋒從磨礪出。」——你現在就是那把劍。",
+  "「不積跬步,無以至千里。」——一題一題就是跬步。",
+  "「莫等閒,白了少年頭,空悲切。」——現在就是你的時刻。",
+  "「會當凌絕頂,一覽眾山小。」——撐過去,風景就在那。",
+  "「長風破浪會有時。」——你的會,就快來了。",
+  "「天生我材必有用。」——包括你寫考卷的這個材。",
+  "「黑髮不知勤學早,白首方悔讀書遲。」——現在學最划算。",
+  "「書山有路勤為徑。」——勤就是你的路。",
+  "「學海無涯苦作舟。」——苦過,你會記得這段。",
+  "「少壯不努力,老大徒傷悲。」——不要當老大才哭。",
+  "「玉不琢,不成器。」——你正在被琢。",
+  "「博觀而約取,厚積而薄發。」——你在厚積。",
+  "「行百里者半九十。」——撐到最後一里才是贏家。",
+  "「水滴石穿,繩鋸木斷。」——每天一點就有用。",
+  "愛因斯坦:「不是我比較聰明,是我陪問題待得比較久。」",
+  "居禮夫人:「人不應該被環境征服,而應該征服環境。」",
+  "海明威:「優於別人並不高貴,優於過去的自己才是。」",
+  "林肯:「給我六小時砍樹,我會花前四小時磨斧。」——磨基本功就是磨斧。",
+  "邱吉爾:「永遠、永遠、永遠不要放棄。」",
+  "愛迪生:「天才是百分之一靈感,百分之九十九汗水。」",
+  "牛頓:「站在巨人的肩膀上。」——課本就是巨人。",
+  "達文西:「鐵不用就會生鏽,水不流就會發臭。」",
+  "孔子:「學而時習之,不亦說乎。」——複習就是。",
+  "孟子:「天將降大任於是人也。」——你也是是人。",
+  "老子:「合抱之木,生於毫末。」",
+  "莊子:「吾生也有涯,而知也無涯。」——但會考有範圍。",
+  "蘇軾:「博觀而約取,厚積而薄發。」",
+  "韓愈:「業精於勤,荒於嬉。」",
+  "顏真卿:「黑髮不知勤學早。」",
+  "王安石:「不畏浮雲遮望眼。」",
+  "范仲淹:「先天下之憂而憂。」——但先把自己的憂解決。",
+  "諸葛亮:「淡泊以明志,寧靜以致遠。」",
+  "曾國藩:「莫問收穫,但問耕耘。」",
+  "胡適:「怕什麼真理無窮,進一寸有一寸的歡喜。」",
+  "魯迅:「其實地上本沒有路,走的人多了,也便成了路。」",
+  "朱自清:「燕子去了,有再來的時候。」——但時間不會。",
+  "林徽因:「真正的平靜,不是避開車馬喧囂。」",
+  "楊絳:「你的問題在於讀書太少而想得太多。」",
+  "三毛:「讀書多了,容顏自然改變。」",
+  "龍應台:「孩子,你慢慢來。」——但要往前。",
+  "賈伯斯:「Stay hungry, stay foolish.」——保持飢餓,保持愚拙。",
+  "喬丹:「我可以接受失敗,但無法接受不去嘗試。」",
+  "科比:「你見過凌晨四點的洛杉磯嗎?」——你見過凌晨的書桌。",
+  "王陽明:「破山中賊易,破心中賊難。」——心中的賊就是焦慮。",
+  "緊張不是你的敵人,是你的引擎。",
+  "沒人天生會考試,都是練出來的。",
+  "害怕考不好很正常,但別讓害怕停下你的筆。",
+  "你不需要全部都會,只需要會的全寫對。",
+  "比較會讓你心累,專注會讓你變強。",
+  "別人讀多久不重要,你讀懂多少才重要。",
+  "一次考差不代表什麼,起來繼續寫。",
+  "偶爾擺爛沒關係,但別擺太久。",
+  "跟同學一起讀,不是一起聊。",
+  "你的同學不是對手,是隊友。",
+  "老師罵你是因為你還救得回來。",
+  "爸媽嘮叨,他們也緊張。",
+  "不會的題目不是攻擊你,是來幫你補洞。",
+  "看到題目空白別怕,從第二題開始也行。",
+  "模擬考考差,真的比真實考差好太多。",
+  "每一次模考都是試誤,試錯就是賺。",
+  "你以為的退步,可能是換成更難的題目。",
+  "不必逼自己每天都神采奕奕。",
+  "但要逼自己每天都坐到書桌前。",
+  "心情爛的時候,就寫最熟的科目。",
+  "寫不下去就出門走五分鐘。",
+  "五分鐘就好,不能更久。",
+  "你不是機器,但也別當廢物。",
+  "笑一下,真的有用。",
+  "看一張可愛的照片再回來讀。",
+  "想想以後想做的事。",
+  "那個未來,是現在的你在打造。",
+  "沒有人能替你寫考卷,但有人能陪你讀。",
+  "找一個讀得下去的環境。",
+  "不適合的環境,換掉就好。",
+  "不要在床上讀書,真的不要。",
+  "椅子坐正,大腦比較願意工作。",
+  "早起讀書,比熬夜划算很多。",
+  "但若你是夜貓子,就晚上拚。",
+  "認識自己的節奏,比模仿別人重要。",
+  "你的努力會自己找路。",
+  "不要懷疑自己的努力。",
+  "懷疑可以,但不能停。",
+  "你想要的東西,值得你受這些苦。",
+  "想要的話,就去要。",
+  "你正在離夢想越來越近。",
+  "看見終點的時候,反而最痛。",
+  "撐過去,你就跟昨天不一樣了。",
+  "沒人會記得你考前哭過,只會看到你考完笑了。",
+  "把哭點留給放榜那天。",
+  "現在,先把眼淚擦乾。",
+  "不要小看「再撐一下」這四個字。",
+  "你撐住的每一秒,都在改寫結局。",
+  "命運不是天注定,是分數決定的。",
+  "分數,是你寫出來的。",
+  "一次只開一本書,別開五本。",
+  "番茄鐘比較有效:25分鐘讀,5分鐘休息。",
+  "不會的題目,先標,別卡。",
+  "卡超過十分鐘,就先跳過。",
+  "錯題本,真的有用,真的。",
+  "每週複習一次錯題本。",
+  "不要重複抄寫不會的東西,要試著解釋給自己聽。",
+  "用自己的話寫過一遍,才算真的會。",
+  "假裝在教別人,你會發現你不會。",
+  "數學:先看公式怎麼推,別只背。",
+  "數學:每題寫完看解析,確認思路。",
+  "數學:看到題目,先想用哪個公式。",
+  "國文:文言文多讀,別只查字典。",
+  "國文:每天讀一篇短文。",
+  "國文:閱讀測驗先看題目再讀文章。",
+  "英文:單字用 App 背,通勤都能背。",
+  "英文:聽力每天聽 15 分鐘。",
+  "英文:文法錯題寫進筆記,複習快。",
+  "自然:物理化學重觀念,不要硬背。",
+  "自然:生物地科多看圖。",
+  "自然:實驗題注意「目的」和「步驟」。",
+  "社會:歷史用時間軸串起來。",
+  "社會:地理用地圖記。",
+  "社會:公民貼近生活,用案例記。",
+  "不要只讀,要寫。",
+  "不要只寫,要對答案。",
+  "不要只對答案,要看解析。",
+  "不要只看解析,要再寫一次。",
+  "第二次寫,才算真的學會。",
+  "練模擬卷,最像考試那天的感覺。",
+  "寫模擬卷要計時,不要慢慢寫。",
+  "模擬考的時間管理,跟真的考試一樣重要。",
+  "弱科,就是分數成長空間最大的地方。",
+  "強科,要維持,別放掉。",
+  "不要只讀強科逃避弱科。",
+  "弱科一週至少花三天。",
+  "強科一週兩天保持手感。",
+  "讀書計畫要寫,但不要太緊。",
+  "留一格「空白時間」給意外。",
+  "每天讀完打勾,有成就感。",
+  "整理筆記不是抄課本,是抓重點。",
+  "抓不到重點的章節,問老師。",
+  "老師很樂意被問,真的。",
+  "不要害怕問問題,害怕的是不問。",
+  "同學會的就請他教你。",
+  "你會的也可以教同學。",
+  "教過一次,自己更熟。",
+  "整理一份「考前必看」筆記。",
+  "那份筆記要薄,不要厚。",
+  "考前一晚只看那份。",
+  "倒數階段,品質比數量重要。",
+  "不要再學新東西,把舊的鞏固。",
+  "把所有錯題再寫一遍。",
+  "不會的科目,看大標題就好,不貪心。",
+  "大綱式複習,救分最快。",
+  "考前一週,睡眠最重要。",
+  "不要熬夜,真的。",
+  "考前一晚,十一點前睡。",
+  "早餐吃飽,別餓著上考場。",
+  "不要吃太奇怪的東西,腸胃會背叛你。",
+  "提早一小時到考場。",
+  "文具準備兩份,以防萬一。",
+  "答案卡用 2B 鉛筆,記得確認。",
+  "准考證、身分證,出門前再檢查一次。",
+  "考前那一分鐘,深呼吸。",
+  "看到題目別慌,從會的開始。",
+  "寫不出來,跳。",
+  "跳了之後別忘記回來。",
+  "答案卡別劃錯格。",
+  "寫完先確認准考證號碼。",
+  "檢查答案,從可能錯的開始。",
+  "不要改太多,第一直覺通常對。",
+  "但明顯算錯的要改。",
+  "時間還剩五分鐘,先確認都有寫。",
+  "不會的也要猜,不要空白。",
+  "考完一科,別跟同學對答案。",
+  "真的,別對答案。",
+  "對了答案,下一科會崩。",
+  "走出考場,深呼吸,下一科。",
+  "中午吃輕一點,別撐。",
+  "想睡就趴一下,十分鐘。",
+  "下午考前不要再翻課本。",
+  "翻了會更慌。",
+  "相信自己讀過的。",
+  "你讀過的東西不會背叛你。",
+  "考完不要回想,往前看。",
+  "你的目標是「全部考完」,不是「全部考好」。",
+  "倒數每一天,都是黃金。",
+  "浪費一天,就少一天。",
+  "但別焦慮到讀不下去。",
+  "一天讀八小時不如有效讀四小時。",
+  "衝刺期,效率第一。",
+  "衝刺期,健康第一。",
+  "衝刺期,睡眠第一。",
+  "三個第一可以並存。",
+  "倒數的每一頁,都比平常珍貴。",
+  "倒數的每一題,都可能就是考題。",
+  "倒數的每一秒,你都在改寫成績。",
+  "倒數結束時,你會感謝現在的自己。",
+  "倒數歸零,你已經贏了一半。",
+  "累了嗎?抱抱你。",
+  "今天不想讀,就不要讀。",
+  "但明天還是要回來。",
+  "你的努力,沒人會白費。",
+  "沒人陪你的時候,陪自己。",
+  "你比你想像中更堅強。",
+  "你比你以為的更聰明。",
+  "你比同學想的更努力。",
+  "你比爸媽看到的更累。",
+  "但你還是撐住了。",
+  "撐住,就是勇敢。",
+  "你不需要被人看見才努力。",
+  "偷偷努力,結果會替你說話。",
+  "一個人讀書也很好。",
+  "一個人吃飯也很好。",
+  "一個人撐過去,以後一個人也敢闖。",
+  "你不孤單,只是現在比較安靜。",
+  "安靜也是一種力量。",
+  "風雨之後不一定有彩虹,但會有放榜。",
+  "你的努力會在放榜那天具象化。",
+  "那天你會哭,但是開心的哭。",
+  "想像那一天,然後回到書本。",
+  "媽媽端進來的水果,接住。",
+  "爸爸幫你關燈的瞬間,記得。",
+  "老師多看你一眼,別怕。",
+  "同學寫的紙條,留著。",
+  "你身後有一整個家在陪你考。",
+  "你身邊有老師在等你問。",
+  "你身旁有同學在一起拚。",
+  "想起這些,再翻一頁。",
+  "累的時候,看看窗外。",
+  "天還亮著,還有時間。",
+  "天黑了,就早點睡。",
+  "累不是失敗,是身體在保護你。",
+  "哭不是脆弱,是壓力在出口。",
+  "笑也可以,笑是繼續走的力氣。",
+  "今天笑了嗎?沒有的話,看一個梗圖。",
+  "看完梗圖,記得回來。",
+  "你今天可能不是最強的,但是最認真的。",
+  "認真,就值得。",
+  "你正在做一件很了不起的事。",
+  "國中三年的努力,壓在這幾張考卷上。",
+  "但那幾張考卷,撐得起你的努力。",
+  "紙很輕,但你的字很重。",
+  "你寫下的每一個字,都有重量。",
+  "監考老師看不見的努力,你都記得。",
+  "那些記得的努力,會變成自信。",
+  "自信,就是會考最大的武器。",
+  "「山重水複疑無路,柳暗花明又一村。」——不會的下一秒就會了。",
+  "「沉舟側畔千帆過,病樹前頭萬木春。」——一時失利不是終點。",
+  "「莫聽穿林打葉聲,何妨吟嘯且徐行。」——雨中讀書最有味。",
+  "「人有悲歡離合,月有陰晴圓缺,此事古難全。」——考差也屬人之常情。",
+  "「但願人長久,千里共嬋娟。」——願你考完還能跟朋友一起賞月。",
+  "「春風又綠江南岸,明月何時照我還。」——你也會回到自由的那天。",
+  "「東風夜放花千樹。」——你的努力會在某一刻綻放。",
+  "「眾裡尋他千百度,驀然回首,那人卻在燈火闌珊處。」——答案有時候就在身邊。",
+  "「停車坐愛楓林晚,霜葉紅於二月花。」——累的時候停下來看美景。",
+  "「春有百花秋有月,夏有涼風冬有雪。」——每一季都有它的好。",
+  "「天涼好個秋。」——讀書天。",
+  "「採菊東籬下,悠然見南山。」——想像考完的悠然。",
+  "「欲窮千里目,更上一層樓。」——多寫一題就多看見一點。",
+  "「白日依山盡,黃河入海流。」——太陽下山你也要繼續。",
+  "「兩岸猿聲啼不住,輕舟已過萬重山。」——過了模考你也過了萬重山。",
+  "「葡萄美酒夜光杯。」——考完讓你喝飲料。",
+  "「明月幾時有,把酒問青天。」——考前不要喝酒。",
+  "「人生若只如初見。」——但讀書要見好多次。",
+  "「曾經滄海難為水。」——經過會考,以後考試都小菜。",
+  "「桃李不言,下自成蹊。」——努力的人自然會被看見。",
+  "「梅花香自苦寒來。」——你正在那個冷的階段。",
+  "「老驥伏櫪,志在千里。」——你還年輕,志在更遠。",
+  "「青青子衿,悠悠我心。」——但你要把心收回來讀書。",
+  "「修身、齊家、治國、平天下。」——先把這一頁讀完。",
+  "「己所不欲,勿施於人。」——對自己也是。",
+  "「三人行,必有我師焉。」——你的同學也是老師。",
+  "「溫故而知新,可以為師矣。」——複習真的重要。",
+  "「學而不思則罔,思而不學則殆。」——兩個都要。",
+  "「知之為知之,不知為不知。」——別騙自己會。",
+  "「敏而好學,不恥下問。」——問問題是聰明,不是丟臉。",
+  "「逝者如斯夫,不舍晝夜。」——時間真的不等人。",
+  "「君子和而不同。」——跟同學讀也要有自己節奏。",
+  "「一鼓作氣,再而衰,三而竭。」——衝刺要趁第一鼓。",
+  "「臥薪嘗膽。」——你不用真的嘗,精神可以學。",
+  "「破釜沉舟。」——倒數階段就是這個氣勢。",
+  "「四面楚歌的時候,還是要唱自己的歌。」",
+  "「兵來將擋,水來土掩。」——考題來了就解。",
+  "「智者千慮,必有一失。」——錯了不丟臉。",
+  "「失之毫釐,差之千里。」——細節要顧。",
+  "「亡羊補牢,猶未為晚。」——現在補進度也不晚。",
+  "「塞翁失馬,焉知非福。」——考差有時是好事。",
+  "「百聞不如一見。」——寫過一遍勝過讀十遍。",
+  "「熟能生巧。」——真的。",
+  "「水能載舟,亦能覆舟。」——手機也是。",
+  "「滴水穿石,非一日之功。」",
+  "「冰凍三尺,非一日之寒。」——但你還有不少天可以拚。",
+  "「春蠶到死絲方盡。」——不用到死,撐到考完就好。",
+  "「捨得一身剮,敢把皇帝拉下馬。」——你也敢面對任何題目。",
+  "「天時不如地利,地利不如人和。」——心安最重要。",
+  "倒數的數字,是你贏回來的時間。",
+  "別人放假你讀書,別人放榜你笑了。",
+  "不會的題目不會打你,別怕。",
+  "課本不會咬人,翻開它。",
+  "數學公式不會逃跑,記住它。",
+  "英文單字看起來像在玩你,但其實它怕你。",
+  "國文閱讀測驗,先深呼吸再讀。",
+  "自然的圖,看仔細,常常藏答案。",
+  "社會的選項,排除法很好用。",
+  "你會的,就放心寫。",
+  "你不會的,就放膽猜。",
+  "介於會跟不會之間的,寫第一直覺。",
+  "考卷不是怪物,是門票。",
+  "通往你想去的學校的門票。",
+  "想想你想去的學校的制服。",
+  "想想你想坐的那間教室。",
+  "想想開學那天的自己。",
+  "那個自己,正在等現在的你。",
+  "你今天讀的每一頁,他都記得。",
+  "他會在某個時刻,跟你說謝謝。",
+  "別讓未來的你失望。",
+  "也別讓現在的你太苦。",
+  "平衡很難,但你做得到。",
+  "有時候放下書才能讀進去。",
+  "散步十分鐘,大腦會重開機。",
+  "喝杯熱的東西,胃會謝謝你。",
+  "抬頭看一下天空。",
+  "看完繼續低頭讀。",
+  "不要邊讀邊吃零食,容易胖,也容易分心。",
+  "但餓的時候要吃。",
+  "別餓著讀書,效率掉一半。",
+  "學一個你喜歡的科目時,珍惜那個瞬間。",
+  "學一個你討厭的科目時,告訴自己「就這次」。",
+  "考完就再也不用了。",
+  "至少這個版本的考試不用了。",
+  "高中還有更多考試,但先過這關。",
+  "一關一關來,不要想太遠。",
+  "但偶爾想一下夢想,會充電。",
+  "你的夢想,值得你今天的辛苦。",
+  "不知道夢想沒關係,先把選擇權拿到手。",
+  "高分就是選擇權。",
+  "你不一定要去最好的學校,但要有資格選。",
+  "把資格拿到,以後再選。",
+  "倒數還剩多少不重要,你做了多少才重要。",
+  "但倒數會提醒你,時間有限。",
+  "有限的時間,專注的力量會被放大。",
+  "你正在被會考磨成更厲害的自己。",
+  "磨完以後,你會發現自己變了。",
+  "變得更耐磨,更穩,更知道自己要什麼。",
+  "加油,還剩這幾天,你撐得住。"
+];
+
+const DEFAULT_TARGET = "2027-05-15"; // 116 學年度國中教育會考預估日(可下方修改)
+
+function getTarget() {
+  return localStorage.getItem("examDate") || DEFAULT_TARGET;
+}
+function setTarget(d) {
+  localStorage.setItem("examDate", d);
+}
+function daysUntil(targetStr) {
+  const target = new Date(targetStr + "T00:00:00");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return Math.round((target - today) / 86400000);
+}
+function getQuoteForToday() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const epoch = new Date(2020, 0, 1);
+  const daysSinceEpoch = Math.floor((today - epoch) / 86400000);
+  const idx = ((daysSinceEpoch * 17) % QUOTES.length + QUOTES.length) % QUOTES.length;
+  return QUOTES[idx];
+}
+function render() {
+  const target = getTarget();
+  const days = daysUntil(target);
+  const $label = document.getElementById("label");
+  const $days = document.getElementById("days");
+  const $unit = document.getElementById("unit");
+  const $target = document.getElementById("target");
+  const $quote = document.getElementById("quote");
+  const $input = document.getElementById("date-input");
+  const $meta = document.getElementById("meta");
+
+  $input.value = target;
+  $target.textContent = "目標日期 " + target;
+
+  if (days > 0) {
+    $label.textContent = "距離國中教育會考還有";
+    $days.textContent = days;
+    $unit.textContent = "天";
+  } else if (days === 0) {
+    $label.textContent = "今天就是會考日";
+    $days.textContent = "0";
+    $unit.textContent = "天";
+  } else {
+    $label.textContent = "會考已過";
+    $days.textContent = Math.abs(days);
+    $unit.textContent = "天";
+  }
+  $quote.textContent = getQuoteForToday();
+  $meta.textContent = "今日已收錄 " + QUOTES.length + " 則語錄,每日隨機抽選一句";
+}
+document.getElementById("save-btn").addEventListener("click", () => {
+  const v = document.getElementById("date-input").value;
+  if (v) { setTarget(v); render(); }
+});
+// ---------- 讀書計畫 ----------
+const STUDY_PLAN = {
+  "國文": [
+    "論語選", "兒時記趣", "五柳先生傳", "愛蓮說", "陋室銘",
+    "賣油翁", "為學一首示子姪", "空城計", "張釋之執法", "王冕的少年時代",
+    "黔之驢", "大同與小康", "紙船印象", "夏夜", "雅量",
+    "背影", "聲音鐘", "田園之秋選", "飛魚季", "差不多先生傳",
+    "與宋元思書", "唐詩選(五言律詩)", "唐詩選(七言絕句)", "宋詞選", "元曲選",
+    "現代新詩選", "字音字形辨識", "詞性與詞義", "成語運用", "修辭技巧",
+    "句型與語法", "標點符號", "國學文學常識", "文體分類",
+    "應用文-書信、便條、柬帖", "應用文-對聯、題辭",
+    "作文-記敘抒情", "作文-論說議論", "閱讀理解-長篇", "閱讀理解-圖表"
+  ],
+  "英文": [
+    "Be 動詞與一般動詞", "現在簡單式", "現在進行式", "過去簡單式", "過去進行式",
+    "未來式 (will / be going to)", "現在完成式", "名詞單複數", "可數與不可數名詞",
+    "代名詞(主格/受格/所有格)", "形容詞", "副詞", "比較級與最高級", "介系詞",
+    "對等連接詞 and/but/or/so", "從屬連接詞 when/while/if", "不定詞 to V",
+    "動名詞 V-ing", "被動語態", "關係代名詞", "假設語氣", "間接問句",
+    "五大句型", "感官動詞與使役動詞", "Wh-questions",
+    "數量詞 some/any/many/much", "助動詞 can/may/should/must",
+    "不規則動詞變化", "常見動詞片語",
+    "國中 2000 字 Level 1", "國中 2000 字 Level 2", "國中 2000 字 Level 3",
+    "短文閱讀", "圖表閱讀", "篇章閱讀", "對話聽力", "短文聽力"
+  ],
+  "數學": [
+    "整數的運算", "因數倍數與質因數分解", "分數與小數運算", "一元一次方程式",
+    "比、比例式與正反比", "二元一次聯立方程式", "直角坐標系",
+    "二元一次方程式的圖形", "統計圖表", "機率",
+    "線型函數", "乘法公式", "多項式運算", "平方根與近似值", "畢氏定理",
+    "因式分解", "一元二次方程式", "等差數列與級數", "函數的概念",
+    "三角形的基本性質", "全等三角形", "平行線性質", "四邊形",
+    "尺規作圖", "幾何證明",
+    "相似形", "圓的性質", "圓與切線", "二次函數圖形", "三角比",
+    "立體圖形表面積與體積", "統計-平均、中位、眾數、標準差"
+  ],
+  "生物": [
+    "生命特徵與科學方法", "細胞的構造與功能", "細胞分裂與分化", "物質進出細胞",
+    "植物的營養與光合作用", "動物的營養與消化", "植物的運輸", "動物的循環",
+    "動物的呼吸", "動物的排泄",
+    "神經系統", "內分泌系統", "感覺器官", "免疫系統", "動物的行為",
+    "植物的繁殖", "動物的生殖", "遺傳與基因", "DNA 與遺傳工程", "演化",
+    "生物的分類與多樣性", "生態系與食物鏈", "能量流動與物質循環",
+    "族群與群集", "生物與環境保育"
+  ],
+  "理化": [
+    "基本測量與科學方法", "物質的世界(密度、三態)", "水溶液與濃度",
+    "空氣的組成與性質", "氧化與還原", "化學反應與化學式",
+    "反應熱與反應速率", "酸鹼鹽與 pH 值",
+    "原子結構", "元素週期表", "化學鍵", "有機化合物",
+    "力的種類與測量", "牛頓運動定律", "功與能量", "簡單機械",
+    "浮力", "壓力",
+    "熱與溫度", "波動的性質", "聲音", "光的反射與折射",
+    "透鏡與面鏡成像", "靜電", "電流與電路", "歐姆定律與電功率",
+    "電與磁", "電磁感應", "核能與輻射", "永續能源"
+  ],
+  "地科": [
+    "地球的形狀與內部構造", "板塊運動", "地震與火山",
+    "岩石與礦物循環", "風化、侵蝕與地形",
+    "海洋與洋流", "大氣層與天氣現象", "氣團、鋒面與台灣天氣",
+    "氣候變遷與全球暖化",
+    "太陽系與行星", "地球運動與日月食", "恆星與宇宙"
+  ],
+  "歷史": [
+    "史前時代的台灣", "國際競逐時期(荷西)", "明鄭時期",
+    "清領前期", "清領後期與開港", "日治時期",
+    "戰後台灣-政治發展", "戰後台灣-經濟與社會",
+    "中華文化的起源", "夏商周封建制度", "秦漢帝國",
+    "魏晉南北朝", "隋唐盛世", "宋元的發展", "明清帝國",
+    "清末變局與列強侵略", "中華民國的建立", "對日抗戰與兩岸分治",
+    "古文明(兩河、埃及、印度)", "希臘羅馬文化", "中古歐洲與宗教",
+    "大航海與文藝復興", "宗教改革與科學革命", "啟蒙運動與美法革命",
+    "工業革命", "帝國主義與第一次世界大戰",
+    "第二次世界大戰", "冷戰與當代世界"
+  ],
+  "地理": [
+    "地圖、經緯度與地理工具",
+    "台灣的位置與範圍", "台灣的地形", "台灣的氣候與水文",
+    "台灣的人口", "台灣的產業與都市",
+    "中國的位置與地形", "中國的氣候與水文", "中國的人口與產業",
+    "東亞地區", "東南亞", "南亞", "西亞與中亞",
+    "北非與撒哈拉以南非洲", "歐洲", "獨立國協(俄羅斯)",
+    "北美洲", "中南美洲", "大洋洲", "兩極地區"
+  ],
+  "公民": [
+    "自我與社會化", "家庭與婚姻", "學校生活與性別平等",
+    "社會團體與規範", "文化與多元社會", "媒體識讀",
+    "政府的組織與職權", "中央與地方政府", "民主政治的意義",
+    "政黨、選舉與公民投票",
+    "法律的基本概念", "民法與生活", "刑法與生活",
+    "行政法與救濟", "少年事件與兒少保護",
+    "經濟基本概念", "市場、價格與供需", "貨幣、金融與消費",
+    "全球化與國際組織", "人權、公民參與與永續發展"
+  ]
+};
+const REVIEW_COUNT = 5;
+let currentSubject = localStorage.getItem("currentSubject") || "國文";
+
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem("studyProgress") || "{}"); }
+  catch (e) { return {}; }
+}
+function saveProgress(p) { localStorage.setItem("studyProgress", JSON.stringify(p)); }
+let progress = loadProgress();
+
+function getCheck(subj, ui, i) {
+  return !!(progress[subj] && progress[subj][ui] && progress[subj][ui][i]);
+}
+function setCheck(subj, ui, i, v) {
+  if (!progress[subj]) progress[subj] = {};
+  if (!progress[subj][ui]) progress[subj][ui] = [];
+  progress[subj][ui][i] = v;
+  saveProgress(progress);
+}
+function subjectStats(subj) {
+  const units = STUDY_PLAN[subj];
+  const total = units.length * REVIEW_COUNT;
+  let done = 0;
+  if (progress[subj]) {
+    for (const arr of Object.values(progress[subj])) {
+      if (Array.isArray(arr)) done += arr.filter(Boolean).length;
+    }
+  }
+  return { total, done, pct: total ? Math.round(done*100/total) : 0 };
+}
+function overallStats() {
+  let total = 0, done = 0;
+  for (const subj of Object.keys(STUDY_PLAN)) {
+    const s = subjectStats(subj);
+    total += s.total; done += s.done;
+  }
+  return { total, done, pct: total ? Math.round(done*100/total) : 0 };
+}
+function renderStudyPlan() {
+  const overall = overallStats();
+  document.getElementById("progress-bar").style.width = overall.pct + "%";
+  document.getElementById("progress-text").textContent =
+    "總進度 " + overall.done + " / " + overall.total + " 次  (" + overall.pct + "%)";
+
+  const $tabs = document.getElementById("subject-tabs");
+  $tabs.innerHTML = "";
+  for (const subj of Object.keys(STUDY_PLAN)) {
+    const sp = subjectStats(subj);
+    const btn = document.createElement("button");
+    btn.className = "tab" + (subj === currentSubject ? " active" : "");
+    btn.textContent = subj + " " + sp.pct + "%";
+    btn.onclick = () => {
+      currentSubject = subj;
+      localStorage.setItem("currentSubject", subj);
+      renderStudyPlan();
+    };
+    $tabs.appendChild(btn);
+  }
+  const sp = subjectStats(currentSubject);
+  document.getElementById("subject-progress-text").textContent =
+    currentSubject + ":" + sp.done + " / " + sp.total + " 次";
+
+  const $list = document.getElementById("unit-list");
+  $list.innerHTML = "";
+  const units = STUDY_PLAN[currentSubject];
+  units.forEach((unit, ui) => {
+    const row = document.createElement("div");
+    row.className = "unit-row";
+    const name = document.createElement("div");
+    name.className = "unit-name";
+    name.textContent = unit;
+    row.appendChild(name);
+    const checks = document.createElement("div");
+    checks.className = "unit-checks";
+    for (let i = 0; i < REVIEW_COUNT; i++) {
+      const checked = getCheck(currentSubject, ui, i);
+      const c = document.createElement("div");
+      c.className = "check" + (checked ? " checked" : "");
+      c.title = "第 " + (i+1) + " 次複習";
+      c.onclick = () => {
+        setCheck(currentSubject, ui, i, !checked);
+        renderStudyPlan();
+      };
+      checks.appendChild(c);
+    }
+    row.appendChild(checks);
+    $list.appendChild(row);
+  });
+}
+document.getElementById("reset-btn").addEventListener("click", () => {
+  if (confirm("確定要清除「" + currentSubject + "」的所有勾選嗎?")) {
+    delete progress[currentSubject];
+    saveProgress(progress);
+    renderStudyPlan();
+  }
+});
+
+render();
+renderStudyPlan();
+// 跨日自動更新(放著不關也會切換)
+setInterval(render, 60 * 1000);
+</script>
+</body>
+</html>
