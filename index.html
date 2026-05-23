@@ -224,6 +224,44 @@
     line-height: 1.3;
   }
   .plan-day.today .plan-unit { background: rgba(255,255,255,0.16); }
+  .plan-day.past.complete .plan-day-date { color: #6dd5ed; }
+  .plan-day.past.incomplete .plan-day-date { color: #ff9b6d; }
+  .plan-unit.missing {
+    background: rgba(255,155,109,0.28) !important;
+    color: #ffd1b3;
+    text-decoration: line-through;
+  }
+  .plan-unit.done { opacity: 0.55; }
+  .regen-btn {
+    display: inline-block;
+    margin-top: 10px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .regen-btn:hover { background: rgba(255,255,255,0.12); }
+  /* 落後警告 */
+  .overdue-banner {
+    background: rgba(255,180,80,0.16);
+    border: 1px solid rgba(255,180,80,0.45);
+    color: #ffe2bb;
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 1.6;
+    text-align: left;
+    transition: background 0.15s;
+  }
+  .overdue-banner b { color: #ffc985; }
+  .overdue-banner .banner-sub { font-size: 12px; opacity: 0.8; }
+  .overdue-banner:hover { background: rgba(255,180,80,0.26); }
 
   @media (max-width: 520px) {
     .unit-row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; }
@@ -234,6 +272,7 @@
 </head>
 <body>
   <div class="app">
+    <div class="overdue-banner hidden" id="overdue-banner"></div>
     <div class="label" id="label">距離國中教育會考還有</div>
     <div class="countdown">
       <div class="days" id="days">--</div>
@@ -994,11 +1033,35 @@ function setView(name) {
   document.getElementById("subject-plan-view").classList.toggle("hidden", name !== "plan");
 }
 
-// ---------- 讀書計劃生成 ----------
+// ---------- 讀書計劃生成、儲存、追蹤 ----------
+function loadStudyPlan() {
+  try { return JSON.parse(localStorage.getItem("studyPlan") || "null"); } catch (e) { return null; }
+}
+function saveStudyPlan(p) { localStorage.setItem("studyPlan", JSON.stringify(p)); }
+function todayKey() {
+  const d = new Date(); d.setHours(0, 0, 0, 0);
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function dateDiff(d1Str, d2Str) {
+  const d1 = new Date(d1Str + "T00:00:00");
+  const d2 = new Date(d2Str + "T00:00:00");
+  return Math.round((d2 - d1) / 86400000);
+}
+function unitCheckCount(subj, ui) {
+  if (!progress[subj] || !progress[subj][ui]) return 0;
+  return progress[subj][ui].filter(Boolean).length;
+}
+function getDayStatus(dayUnits) {
+  const missing = [];
+  for (const u of dayUnits) {
+    if (unitCheckCount(u.subj, u.ui) < u.pass) missing.push(u);
+  }
+  return { missing, complete: missing.length === 0 };
+}
+
 function generateStudyPlan(daysLeft) {
   if (daysLeft <= 0) return null;
   const subjects = Object.keys(STUDY_PLAN);
-  // 把所有單元按科目穿插排列(國 → 英 → 數 → 生 → 理 → 地科 → 史 → 地 → 公 → 國 ...)
   const interleaved = [];
   const idx = subjects.map(() => 0);
   let added = true;
@@ -1013,18 +1076,15 @@ function generateStudyPlan(daysLeft) {
       }
     }
   }
-  // 決定複習幾輪:目標每天約 5 個單元,上限 5 輪
   const TARGET_PER_DAY = 5;
   let passes = Math.floor(daysLeft * TARGET_PER_DAY / interleaved.length);
   passes = Math.max(1, Math.min(REVIEW_COUNT, passes));
-  // 展開所有 sessions
   const allSessions = [];
   for (let p = 0; p < passes; p++) {
     for (const s of interleaved) {
       allSessions.push({ ...s, pass: p + 1 });
     }
   }
-  // 平均分到每一天
   const perDay = Math.ceil(allSessions.length / daysLeft);
   const plan = [];
   for (let d = 0; d < daysLeft; d++) {
@@ -1035,14 +1095,65 @@ function generateStudyPlan(daysLeft) {
   return { plan, perDay, passes, totalSessions: allSessions.length, unitCount: interleaved.length };
 }
 
+function regenerateAndSavePlan() {
+  const daysLeft = daysUntil(getTarget());
+  if (daysLeft <= 0) return null;
+  const res = generateStudyPlan(daysLeft);
+  const sp = {
+    startDate: todayKey(),
+    plan: res.plan,
+    perDay: res.perDay,
+    passes: res.passes,
+    unitCount: res.unitCount,
+    totalSessions: res.totalSessions
+  };
+  saveStudyPlan(sp);
+  return sp;
+}
+
+function getOverdue() {
+  const sp = loadStudyPlan();
+  if (!sp) return { totalMissing: 0, daysMissed: 0, todayIdx: -1, sp: null };
+  const todayIdx = dateDiff(sp.startDate, todayKey());
+  let totalMissing = 0, daysMissed = 0;
+  for (let d = 0; d < Math.min(todayIdx, sp.plan.length); d++) {
+    const st = getDayStatus(sp.plan[d]);
+    if (!st.complete) { daysMissed++; totalMissing += st.missing.length; }
+  }
+  return { totalMissing, daysMissed, todayIdx, sp };
+}
+
+function renderOverdueBanner() {
+  const $b = document.getElementById("overdue-banner");
+  if (!$b) return;
+  const od = getOverdue();
+  // 在 plan view 不顯示 banner(已經在計劃裡看得到落後了)
+  if (od.totalMissing === 0 || currentView === "plan") {
+    $b.classList.add("hidden");
+    $b.onclick = null;
+    return;
+  }
+  $b.innerHTML =
+    "⚠️ <b>還有 " + od.totalMissing + " 個單元沒補上</b>(累積 " + od.daysMissed + " 天落後)<br>" +
+    '<span class="banner-sub">點這裡看計劃,補完再繼續 →</span>';
+  $b.classList.remove("hidden");
+  $b.onclick = () => {
+    currentView = "plan";
+    localStorage.setItem("currentView", "plan");
+    renderStudyPlan();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+}
+
 function formatPlanDay(offset) {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() + offset);
-  const dayNames = ['日','一','二','三','四','五','六'];
-  let s = (d.getMonth()+1) + '/' + d.getDate() + ' (' + dayNames[d.getDay()] + ')';
-  if (offset === 0) s = '今天 ' + s;
-  else if (offset === 1) s = '明天 ' + s;
+  const dayNames = ["日","一","二","三","四","五","六"];
+  let s = (d.getMonth()+1) + "/" + d.getDate() + " (" + dayNames[d.getDay()] + ")";
+  if (offset === 0) s = "今天 " + s;
+  else if (offset === 1) s = "明天 " + s;
+  else if (offset === -1) s = "昨天 " + s;
   return s;
 }
 
@@ -1052,37 +1163,64 @@ function renderPlan() {
   const $summary = document.getElementById("plan-summary");
   const $content = document.getElementById("plan-content");
   if (daysLeft <= 0) {
-    $summary.textContent = "會考已經結束了,加油繼續未來的路!";
+    $summary.textContent = "會考已經結束了!";
     $content.innerHTML = "";
     return;
   }
-  const res = generateStudyPlan(daysLeft);
+  let sp = loadStudyPlan();
+  if (!sp) sp = regenerateAndSavePlan();
+  if (!sp) return;
+  const todayIdx = dateDiff(sp.startDate, todayKey());
   $summary.innerHTML =
-    "還剩 <b>" + daysLeft + "</b> 天 · 共 <b>" + res.unitCount + "</b> 個單元 · 規劃複習 <b>" + res.passes + "</b> 輪<br>" +
-    "每天約 <b>" + res.perDay + "</b> 個單元 (共 " + res.totalSessions + " 次 session)";
+    "起算日:<b>" + sp.startDate + "</b> · 共 <b>" + sp.plan.length + "</b> 天 · 每天約 <b>" + sp.perDay + "</b> 單元 · 規劃 <b>" + sp.passes + "</b> 輪<br>" +
+    '<button class="regen-btn" id="regen-plan-btn">🔄 重新制定計劃</button>';
   $content.innerHTML = "";
-  res.plan.forEach((dayUnits, offset) => {
+  sp.plan.forEach((dayUnits, dayIdx) => {
     if (dayUnits.length === 0) return;
     const row = document.createElement("div");
-    row.className = "plan-day" + (offset === 0 ? " today" : "");
+    let cls = "plan-day";
+    let status = null;
+    if (dayIdx === todayIdx) cls += " today";
+    else if (dayIdx < todayIdx) {
+      status = getDayStatus(dayUnits);
+      cls += status.complete ? " past complete" : " past incomplete";
+    }
+    row.className = cls;
     const date = document.createElement("div");
     date.className = "plan-day-date";
-    date.textContent = formatPlanDay(offset);
+    const offset = dayIdx - todayIdx;
+    let dateText = formatPlanDay(offset);
+    if (status) dateText += status.complete ? "  ✓" : "  ⚠";
+    date.textContent = dateText;
     row.appendChild(date);
     const units = document.createElement("div");
     units.className = "plan-day-units";
     for (const u of dayUnits) {
       const tag = document.createElement("span");
       tag.className = "plan-unit";
-      tag.textContent = u.subj + "·" + u.name + (res.passes > 1 ? " ⓡ" + u.pass : "");
+      if (status) {
+        if (unitCheckCount(u.subj, u.ui) < u.pass) tag.classList.add("missing");
+        else tag.classList.add("done");
+      }
+      tag.textContent = u.subj + "·" + u.name + (sp.passes > 1 ? " ⓡ" + u.pass : "");
       units.appendChild(tag);
     }
     row.appendChild(units);
     $content.appendChild(row);
   });
+  const $regen = document.getElementById("regen-plan-btn");
+  if ($regen) {
+    $regen.onclick = () => {
+      if (confirm("重新依今天剩餘天數產生新計劃?舊計劃會被覆蓋(已勾選的複習進度不會消失)。")) {
+        regenerateAndSavePlan();
+        renderStudyPlan();
+      }
+    };
+  }
 }
 
 function renderStudyPlan() {
+  renderOverdueBanner();
   if (currentView === "plan") {
     renderPlan();
   } else if (currentView === "home" || !DISPLAY_GROUPS[currentView]) {
@@ -1095,20 +1233,21 @@ function renderStudyPlan() {
 document.getElementById("generate-plan-btn").addEventListener("click", () => {
   currentView = "plan";
   localStorage.setItem("currentView", "plan");
+  if (!loadStudyPlan()) regenerateAndSavePlan();
   renderStudyPlan();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 document.getElementById("plan-back-btn").addEventListener("click", () => {
   currentView = "home";
   localStorage.setItem("currentView", "home");
   renderStudyPlan();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 document.getElementById("back-btn").addEventListener("click", () => {
   currentView = "home";
   localStorage.setItem("currentView", "home");
   renderStudyPlan();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 document.getElementById("reset-btn").addEventListener("click", () => {
   if (currentView === "home" || !DISPLAY_GROUPS[currentView]) return;
@@ -1121,10 +1260,13 @@ document.getElementById("reset-btn").addEventListener("click", () => {
   }
 });
 
+// 第一次載入時若已過午夜,確保 banner 重算
+window.addEventListener("focus", () => { renderStudyPlan(); });
+
 render();
 renderStudyPlan();
-// 跨日自動更新(放著不關也會切換)
-setInterval(render, 60 * 1000);
+// 跨日自動更新(放著不關也會切換),順便重算 banner
+setInterval(() => { render(); renderStudyPlan(); }, 60 * 1000);
 </script>
 </body>
 </html>
