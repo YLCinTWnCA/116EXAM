@@ -263,6 +263,41 @@
   .overdue-banner .banner-sub { font-size: 12px; opacity: 0.8; }
   .overdue-banner:hover { background: rgba(255,180,80,0.26); }
 
+  /* 課本版本選擇 */
+  .home-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 24px; }
+  .plan-btn.secondary {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .plan-btn.secondary:hover { background: rgba(255,255,255,0.16); box-shadow: none; }
+  .version-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    gap: 12px;
+  }
+  .version-subj { font-size: 15px; font-weight: 600; }
+  .version-select {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    min-width: 160px;
+  }
+  .version-select option {
+    background: #0f2027;
+    color: #fff;
+  }
+
   @media (max-width: 520px) {
     .unit-row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; }
     .unit-checks { align-self: flex-end; }
@@ -290,7 +325,10 @@
         <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar"></div></div>
         <div class="progress-text" id="progress-text">總進度 0 / 0</div>
         <div class="subject-grid" id="subject-grid"></div>
-        <button class="plan-btn" id="generate-plan-btn">📋 讀書計劃</button>
+        <div class="home-buttons">
+          <button class="plan-btn" id="generate-plan-btn">📋 讀書計劃</button>
+          <button class="plan-btn secondary" id="version-btn">📚 課本版本</button>
+        </div>
       </div>
 
       <!-- 細節:點科目後 -->
@@ -302,6 +340,20 @@
         </div>
         <div id="detail-content"></div>
         <button class="reset-btn" id="reset-btn">清除本科勾選</button>
+      </div>
+
+      <!-- 課本版本選擇 -->
+      <div id="subject-version-view" class="hidden">
+        <button class="back-btn" id="version-back-btn">← 回到全部科目</button>
+        <div class="detail-header">
+          <div class="detail-title">課本版本</div>
+        </div>
+        <div class="plan-summary">
+          每一科可選用康軒/南一/翰林,讀書計劃會用該版本的章節標題。<br>
+          標「待補」的版本會自動使用通用版(108 課綱)。<br>
+          <span style="opacity:0.6;font-size:11px">⚠️ 切換版本後,該科已勾選的進度會看起來對應到不同單元,建議選定一次就不換。</span>
+        </div>
+        <div id="version-content"></div>
       </div>
 
       <!-- 讀書計劃 -->
@@ -2432,7 +2484,7 @@ document.getElementById("save-btn").addEventListener("click", () => {
   if (v) { setTarget(v); render(); }
 });
 // ---------- 讀書計畫 ----------
-const STUDY_PLAN = {
+const STUDY_PLAN_GENERIC = {
   "國文": [
     "論語選", "兒時記趣", "五柳先生傳", "愛蓮說", "陋室銘",
     "賣油翁", "為學一首示子姪", "空城計", "張釋之執法", "王冕的少年時代",
@@ -2526,6 +2578,52 @@ const STUDY_PLAN = {
     "全球化與國際組織", "人權、公民參與與永續發展"
   ]
 };
+
+// ---------- 課本版本(3 出版社) ----------
+const STUDY_PLAN_PUBLISHERS = ["通用", "康軒", "南一", "翰林"];
+// 每個出版社各科的單元清單。空陣列 = 待補,getUnits 會 fallback 到通用版。
+// 113~115 學年度(對應 2027 會考這屆)的章節標題,陸續用 web search 補上。
+const STUDY_PLAN_BY_VERSION = {
+  "康軒": {
+    "國文": [], "英文": [], "數學": [], "生物": [], "理化": [],
+    "地科": [], "歷史": [], "地理": [], "公民": []
+  },
+  "南一": {
+    "國文": [], "英文": [], "數學": [], "生物": [], "理化": [],
+    "地科": [], "歷史": [], "地理": [], "公民": []
+  },
+  "翰林": {
+    "國文": [], "英文": [], "數學": [], "生物": [], "理化": [],
+    "地科": [], "歷史": [], "地理": [], "公民": []
+  }
+};
+let textbookVersion = {};
+try { textbookVersion = JSON.parse(localStorage.getItem("textbookVersion") || "{}"); }
+catch (e) { textbookVersion = {}; }
+function saveTextbookVersion() { localStorage.setItem("textbookVersion", JSON.stringify(textbookVersion)); }
+function getUnits(subject) {
+  const v = textbookVersion[subject];
+  if (v && v !== "通用") {
+    const pd = STUDY_PLAN_BY_VERSION[v];
+    if (pd && Array.isArray(pd[subject]) && pd[subject].length > 0) return pd[subject];
+  }
+  return STUDY_PLAN_GENERIC[subject];
+}
+function hasPublisherData(publisher, subject) {
+  if (publisher === "通用") return true;
+  const pd = STUDY_PLAN_BY_VERSION[publisher];
+  return !!(pd && Array.isArray(pd[subject]) && pd[subject].length > 0);
+}
+// 舊 code 用 STUDY_PLAN[subj] 跟 Object.keys(STUDY_PLAN) 全部繼續可用 → Proxy 動態查
+const STUDY_PLAN = new Proxy({}, {
+  get: (_, prop) => getUnits(prop),
+  ownKeys: () => Object.keys(STUDY_PLAN_GENERIC),
+  has: (_, prop) => prop in STUDY_PLAN_GENERIC,
+  getOwnPropertyDescriptor: (_, prop) => (prop in STUDY_PLAN_GENERIC)
+    ? { configurable: true, enumerable: true, value: getUnits(prop) }
+    : undefined
+});
+
 const REVIEW_COUNT = 5;
 // 5 大科:自然=生物+理化+地科,社會=歷史+地理+公民
 const DISPLAY_GROUPS = {
@@ -2536,7 +2634,7 @@ const DISPLAY_GROUPS = {
   "社會": ["歷史", "地理", "公民"]
 };
 let currentView = localStorage.getItem("currentView") || "home";
-if (currentView !== "home" && currentView !== "plan" && !DISPLAY_GROUPS[currentView]) currentView = "home";
+if (currentView !== "home" && currentView !== "plan" && currentView !== "version" && !DISPLAY_GROUPS[currentView]) currentView = "home";
 
 function loadProgress() {
   try { return JSON.parse(localStorage.getItem("studyProgress") || "{}"); }
@@ -2683,6 +2781,39 @@ function setView(name) {
   document.getElementById("subject-grid-view").classList.toggle("hidden", name !== "home");
   document.getElementById("subject-detail-view").classList.toggle("hidden", name !== "detail");
   document.getElementById("subject-plan-view").classList.toggle("hidden", name !== "plan");
+  document.getElementById("subject-version-view").classList.toggle("hidden", name !== "version");
+}
+
+function renderVersionPicker() {
+  setView("version");
+  const $c = document.getElementById("version-content");
+  $c.innerHTML = "";
+  for (const subj of Object.keys(STUDY_PLAN_GENERIC)) {
+    const row = document.createElement("div");
+    row.className = "version-row";
+    const name = document.createElement("div");
+    name.className = "version-subj";
+    name.textContent = subj;
+    row.appendChild(name);
+    const sel = document.createElement("select");
+    sel.className = "version-select";
+    for (const pub of STUDY_PLAN_PUBLISHERS) {
+      const opt = document.createElement("option");
+      opt.value = pub;
+      let label = pub;
+      if (pub !== "通用" && !hasPublisherData(pub, subj)) label = pub + "(待補,用通用)";
+      opt.textContent = label;
+      if ((textbookVersion[subj] || "通用") === pub) opt.selected = true;
+      sel.appendChild(opt);
+    }
+    sel.onchange = () => {
+      textbookVersion[subj] = sel.value;
+      saveTextbookVersion();
+      // 立刻重畫一次,讓「待補」標籤跟著科目選擇即時更新
+    };
+    row.appendChild(sel);
+    $c.appendChild(row);
+  }
 }
 
 // ---------- 讀書計劃生成、儲存、追蹤 ----------
@@ -2875,6 +3006,8 @@ function renderStudyPlan() {
   renderOverdueBanner();
   if (currentView === "plan") {
     renderPlan();
+  } else if (currentView === "version") {
+    renderVersionPicker();
   } else if (currentView === "home" || !DISPLAY_GROUPS[currentView]) {
     renderHome();
   } else {
@@ -2882,6 +3015,18 @@ function renderStudyPlan() {
   }
 }
 
+document.getElementById("version-btn").addEventListener("click", () => {
+  currentView = "version";
+  localStorage.setItem("currentView", "version");
+  renderStudyPlan();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+document.getElementById("version-back-btn").addEventListener("click", () => {
+  currentView = "home";
+  localStorage.setItem("currentView", "home");
+  renderStudyPlan();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
 document.getElementById("generate-plan-btn").addEventListener("click", () => {
   currentView = "plan";
   localStorage.setItem("currentView", "plan");
