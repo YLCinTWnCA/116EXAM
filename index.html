@@ -62,7 +62,9 @@
   .unit-list { display: flex; flex-direction: column; gap: 5px; }
   .unit-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; background: rgba(255,255,255,0.04); border-radius: 8px; gap: 12px; transition: background 0.15s; }
   .unit-row:hover { background: rgba(255,255,255,0.07); }
-  .unit-name { font-size: 13.5px; flex: 1; line-height: 1.4; }
+  .unit-name { font-size: 13.5px; flex: 1; line-height: 1.4; cursor: pointer; transition: color 0.15s; user-select: none; }
+  .unit-name:hover { color: #6dd5ed; }
+  .unit-name:active { color: #4a90c2; }
   .unit-checks { display: flex; gap: 5px; flex-shrink: 0; }
   .check { width: 22px; height: 22px; border-radius: 5px; border: 1.5px solid rgba(255,255,255,0.3); cursor: pointer; transition: all 0.15s; user-select: none; position: relative; }
   .check:hover { border-color: rgba(255,255,255,0.6); }
@@ -869,18 +871,35 @@ function renderDetail(group) {
       const name = document.createElement("div");
       name.className = "unit-name";
       name.textContent = unit;
+      name.title = "點一下加 1 次複習";
+      name.onclick = () => {
+        for (let i = 0; i < REVIEW_COUNT; i++) {
+          if (!getCheck(subj, ui, i)) {
+            setCheck(subj, ui, i, true);
+            renderStudyPlan();
+            return;
+          }
+        }
+      };
       row.appendChild(name);
       const checks = document.createElement("div");
       checks.className = "unit-checks";
+      const removeOne = () => {
+        // 從右往左找第一個已勾選的清掉
+        for (let i = REVIEW_COUNT - 1; i >= 0; i--) {
+          if (getCheck(subj, ui, i)) {
+            setCheck(subj, ui, i, false);
+            renderStudyPlan();
+            return;
+          }
+        }
+      };
       for (let i = 0; i < REVIEW_COUNT; i++) {
         const checked = getCheck(subj, ui, i);
         const c = document.createElement("div");
         c.className = "check" + (checked ? " checked" : "");
-        c.title = "第 " + (i+1) + " 次複習";
-        c.onclick = () => {
-          setCheck(subj, ui, i, !checked);
-          renderStudyPlan();
-        };
+        c.title = "點一下減 1 次複習";
+        c.onclick = removeOne;
         checks.appendChild(c);
       }
       row.appendChild(checks);
