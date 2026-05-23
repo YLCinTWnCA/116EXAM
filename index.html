@@ -156,6 +156,75 @@
   }
   .hidden { display: none !important; }
 
+  /* 制定讀書計劃 */
+  .plan-btn {
+    display: block;
+    margin: 24px auto 0;
+    background: linear-gradient(135deg, #6dd5ed 0%, #4a90c2 100%);
+    border: none;
+    color: #0f2027;
+    padding: 12px 26px;
+    border-radius: 24px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 0.15em;
+  }
+  .plan-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(109,213,237,0.28);
+  }
+  .plan-summary {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.85;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    line-height: 1.7;
+  }
+  .plan-day {
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .plan-day.today {
+    background: rgba(109,213,237,0.15);
+    border: 1px solid rgba(109,213,237,0.4);
+  }
+  .plan-day.past { opacity: 0.32; }
+  .plan-day-date {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0.85;
+    min-width: 92px;
+    padding-top: 3px;
+    letter-spacing: 0.05em;
+  }
+  .plan-day.today .plan-day-date { color: #6dd5ed; }
+  .plan-day-units {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .plan-unit {
+    font-size: 11.5px;
+    padding: 3px 8px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 4px;
+    line-height: 1.3;
+  }
+  .plan-day.today .plan-unit { background: rgba(255,255,255,0.16); }
+
   @media (max-width: 520px) {
     .unit-row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; }
     .unit-checks { align-self: flex-end; }
@@ -182,6 +251,7 @@
         <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar"></div></div>
         <div class="progress-text" id="progress-text">總進度 0 / 0</div>
         <div class="subject-grid" id="subject-grid"></div>
+        <button class="plan-btn" id="generate-plan-btn">📋 制定讀書計劃</button>
       </div>
 
       <!-- 細節:點科目後 -->
@@ -193,6 +263,16 @@
         </div>
         <div id="detail-content"></div>
         <button class="reset-btn" id="reset-btn">清除本科勾選</button>
+      </div>
+
+      <!-- 讀書計劃 -->
+      <div id="subject-plan-view" class="hidden">
+        <button class="back-btn" id="plan-back-btn">← 回到全部科目</button>
+        <div class="detail-header">
+          <div class="detail-title">讀書計劃</div>
+        </div>
+        <div class="plan-summary" id="plan-summary"></div>
+        <div id="plan-content"></div>
       </div>
     </div>
 
@@ -765,7 +845,7 @@ const DISPLAY_GROUPS = {
   "社會": ["歷史", "地理", "公民"]
 };
 let currentView = localStorage.getItem("currentView") || "home";
-if (currentView !== "home" && !DISPLAY_GROUPS[currentView]) currentView = "home";
+if (currentView !== "home" && currentView !== "plan" && !DISPLAY_GROUPS[currentView]) currentView = "home";
 
 function loadProgress() {
   try { return JSON.parse(localStorage.getItem("studyProgress") || "{}"); }
@@ -812,8 +892,7 @@ function overallStats() {
 }
 
 function renderHome() {
-  document.getElementById("subject-grid-view").classList.remove("hidden");
-  document.getElementById("subject-detail-view").classList.add("hidden");
+  setView("home");
 
   const overall = overallStats();
   document.getElementById("progress-bar").style.width = overall.pct + "%";
@@ -842,8 +921,7 @@ function renderHome() {
 }
 
 function renderDetail(group) {
-  document.getElementById("subject-grid-view").classList.add("hidden");
-  document.getElementById("subject-detail-view").classList.remove("hidden");
+  setView("detail");
 
   const gs = groupStats(group);
   document.getElementById("detail-title").textContent = group;
@@ -910,14 +988,122 @@ function renderDetail(group) {
   }
 }
 
+function setView(name) {
+  document.getElementById("subject-grid-view").classList.toggle("hidden", name !== "home");
+  document.getElementById("subject-detail-view").classList.toggle("hidden", name !== "detail");
+  document.getElementById("subject-plan-view").classList.toggle("hidden", name !== "plan");
+}
+
+// ---------- 讀書計劃生成 ----------
+function generateStudyPlan(daysLeft) {
+  if (daysLeft <= 0) return null;
+  const subjects = Object.keys(STUDY_PLAN);
+  // 把所有單元按科目穿插排列(國 → 英 → 數 → 生 → 理 → 地科 → 史 → 地 → 公 → 國 ...)
+  const interleaved = [];
+  const idx = subjects.map(() => 0);
+  let added = true;
+  while (added) {
+    added = false;
+    for (let s = 0; s < subjects.length; s++) {
+      const units = STUDY_PLAN[subjects[s]];
+      if (idx[s] < units.length) {
+        interleaved.push({ subj: subjects[s], ui: idx[s], name: units[idx[s]] });
+        idx[s]++;
+        added = true;
+      }
+    }
+  }
+  // 決定複習幾輪:目標每天約 5 個單元,上限 5 輪
+  const TARGET_PER_DAY = 5;
+  let passes = Math.floor(daysLeft * TARGET_PER_DAY / interleaved.length);
+  passes = Math.max(1, Math.min(REVIEW_COUNT, passes));
+  // 展開所有 sessions
+  const allSessions = [];
+  for (let p = 0; p < passes; p++) {
+    for (const s of interleaved) {
+      allSessions.push({ ...s, pass: p + 1 });
+    }
+  }
+  // 平均分到每一天
+  const perDay = Math.ceil(allSessions.length / daysLeft);
+  const plan = [];
+  for (let d = 0; d < daysLeft; d++) {
+    const start = d * perDay;
+    if (start >= allSessions.length) { plan.push([]); }
+    else { plan.push(allSessions.slice(start, start + perDay)); }
+  }
+  return { plan, perDay, passes, totalSessions: allSessions.length, unitCount: interleaved.length };
+}
+
+function formatPlanDay(offset) {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + offset);
+  const dayNames = ['日','一','二','三','四','五','六'];
+  let s = (d.getMonth()+1) + '/' + d.getDate() + ' (' + dayNames[d.getDay()] + ')';
+  if (offset === 0) s = '今天 ' + s;
+  else if (offset === 1) s = '明天 ' + s;
+  return s;
+}
+
+function renderPlan() {
+  setView("plan");
+  const daysLeft = daysUntil(getTarget());
+  const $summary = document.getElementById("plan-summary");
+  const $content = document.getElementById("plan-content");
+  if (daysLeft <= 0) {
+    $summary.textContent = "會考已經結束了,加油繼續未來的路!";
+    $content.innerHTML = "";
+    return;
+  }
+  const res = generateStudyPlan(daysLeft);
+  $summary.innerHTML =
+    "還剩 <b>" + daysLeft + "</b> 天 · 共 <b>" + res.unitCount + "</b> 個單元 · 規劃複習 <b>" + res.passes + "</b> 輪<br>" +
+    "每天約 <b>" + res.perDay + "</b> 個單元 (共 " + res.totalSessions + " 次 session)";
+  $content.innerHTML = "";
+  res.plan.forEach((dayUnits, offset) => {
+    if (dayUnits.length === 0) return;
+    const row = document.createElement("div");
+    row.className = "plan-day" + (offset === 0 ? " today" : "");
+    const date = document.createElement("div");
+    date.className = "plan-day-date";
+    date.textContent = formatPlanDay(offset);
+    row.appendChild(date);
+    const units = document.createElement("div");
+    units.className = "plan-day-units";
+    for (const u of dayUnits) {
+      const tag = document.createElement("span");
+      tag.className = "plan-unit";
+      tag.textContent = u.subj + "·" + u.name + (res.passes > 1 ? " ⓡ" + u.pass : "");
+      units.appendChild(tag);
+    }
+    row.appendChild(units);
+    $content.appendChild(row);
+  });
+}
+
 function renderStudyPlan() {
-  if (currentView === "home" || !DISPLAY_GROUPS[currentView]) {
+  if (currentView === "plan") {
+    renderPlan();
+  } else if (currentView === "home" || !DISPLAY_GROUPS[currentView]) {
     renderHome();
   } else {
     renderDetail(currentView);
   }
 }
 
+document.getElementById("generate-plan-btn").addEventListener("click", () => {
+  currentView = "plan";
+  localStorage.setItem("currentView", "plan");
+  renderStudyPlan();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById("plan-back-btn").addEventListener("click", () => {
+  currentView = "home";
+  localStorage.setItem("currentView", "home");
+  renderStudyPlan();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 document.getElementById("back-btn").addEventListener("click", () => {
   currentView = "home";
   localStorage.setItem("currentView", "home");
