@@ -1,0 +1,2101 @@
+{
+ "數學|數與數線": {
+  "subj": "數學",
+  "junyiTitle": "【七上】第一章 數與數線",
+  "sections": [
+   {
+    "title": "1-1 正數與負數",
+    "points": [
+     "用 ＋、－表示相反意義的量",
+     "正數和負數",
+     "【觀念】數的相關名詞介紹",
+     "【觀念】數線",
+     "認識數線",
+     "在數線上描出指定點",
+     "利用數線比較數的大小",
+     "【觀念】相反數",
+     "相反數的定義",
+     "𝒂 的相反數是－𝒂，所以－𝒂 < 0 ?",
+     "【觀念】絕對值",
+     "絕對值的意義"
+    ]
+   },
+   {
+    "title": "1-2 正負數的加減",
+    "points": [
+     "正負相消的規則",
+     "【觀念】整數的加法 1：同號相加",
+     "同號數相加",
+     "【觀念】整數的加法 2：異號相加",
+     "異號數相加",
+     "利用加法交換律求和",
+     "利用加法結合律求和",
+     "整數減正整數",
+     "正整數減負整數",
+     "負整數減負整數",
+     "去括號規則",
+     "數線上兩點的距離"
+    ]
+   },
+   {
+    "title": "1-3 正負數的乘除",
+    "points": [
+     "整數的乘法：以水位上升下降為例",
+     "整數的乘法：以體重增減為例",
+     "含 1、－1 或 0 的乘法",
+     "乘法交換律",
+     "乘法結合律",
+     "乘法分配律",
+     "除法是否有結合律或分配律?",
+     "整數的除法：負負得正、正負得負"
+    ]
+   },
+   {
+    "title": "1-4 指數記法與科學記號",
+    "points": [
+     "【觀念】乘方的意義與記法",
+     "指數的意義",
+     "10 的次方",
+     "【觀念】科學記號的引入",
+     "【觀念】科學記號 1：正指數次方",
+     "【觀念】科學記號 2：負指數次方",
+     "科學記號"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m7a-c01"
+ },
+ "數學|標準分解式與分數運算": {
+  "subj": "數學",
+  "junyiTitle": "【七上】第二章 標準分解式與分數運算",
+  "sections": [
+   {
+    "title": "2-1 質因數分解",
+    "points": [
+     "【觀念】因數與倍數",
+     "用整除找出因數",
+     "【觀念】判別 5、2、4 的倍數",
+     "判別 2 的倍數",
+     "判別 5 的倍數",
+     "判別 4 的倍數",
+     "判別 9 的倍數",
+     "【觀念】判別 3 的倍數",
+     "判別 3 的倍數",
+     "【觀念】判別 11 的倍數",
+     "判別 11 的倍數",
+     "【觀念】質數與合數"
+    ]
+   },
+   {
+    "title": "2-2 最大公因數與最小公倍數",
+    "points": [
+     "【觀念】公因數與最大公因數",
+     "公因數與最大公因數",
+     "利用短除法求最大公因數",
+     "求指數型式的最大公因數",
+     "【觀念】公倍數與最小公倍數",
+     "公倍數和最小公倍數",
+     "利用短除法求最小公倍數",
+     "求指數型式的最小公倍數"
+    ]
+   },
+   {
+    "title": "2-3 分數的四則運算",
+    "points": [
+     "負分數、等值分數、約分、最簡分數",
+     "真分數、假分數和負分數比大小",
+     "【觀念】分數的加減",
+     "同分母分數的加減法",
+     "異分母分數的加減法",
+     "負的帶分數",
+     "【觀念】分數的乘法",
+     "兩個分數相乘",
+     "多個分數相乘",
+     "【觀念】分數的除法",
+     "倒數與分數的除法",
+     "數的四則運算規則"
+    ]
+   },
+   {
+    "title": "2-4 指數律",
+    "points": [
+     "分數的乘方",
+     "分數或小數的乘方比較大小",
+     "乘方相乘 𝒂ᵐ×𝒂ⁿ＝𝒂ᵐ⁺ⁿ",
+     "乘方相除 𝒂ᵐ÷𝒃ⁿ ＝ 𝒂ᵐ⁻ⁿ (𝒎≥𝒏)",
+     "乘方的乘方 (𝒂ᵐ)ⁿ ＝ 𝒂ᵐⁿ",
+     "乘積的乘方 (𝒂×𝒃)ᵐ ＝ 𝒂ᵐ×𝒃ᵐ"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m7a-c02"
+ },
+ "數學|一元一次方程式": {
+  "subj": "數學",
+  "junyiTitle": "【七上】第三章 一元一次方程式",
+  "sections": [
+   {
+    "title": "3-1 式子的運算",
+    "points": [
+     "【觀念】以符號列出代數式",
+     "以符號列代數式",
+     "什麼是代數式",
+     "代數式的值",
+     "【觀念】代數式的名詞認識",
+     "認識一元一次式",
+     "一元一次式與數的乘法運算",
+     "一元一次式與數的乘法運算（分配律）",
+     "用分配律去括號",
+     "一元一次式與數的除法運算",
+     "一元一次式的加減運算性質",
+     "認識「同類項合併」"
+    ]
+   },
+   {
+    "title": "3-2 解一元一次方程式",
+    "points": [
+     "【觀念】一元一次方程式及其解的意義",
+     "一元一次方程式的意義",
+     "一元一次方程式解的意義",
+     "【觀念】等量（加法、減法）公理",
+     "【觀念】等量（乘法、除法）公理",
+     "等量公理",
+     "移項法則"
+    ]
+   },
+   {
+    "title": "3-3 應用問題",
+    "points": [
+     "【觀念】應用問題與一元一次方程式"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m7a-c03"
+ },
+ "數學|二元一次聯立方程式": {
+  "subj": "數學",
+  "junyiTitle": "【七下】第一章 二元一次聯立方程式",
+  "sections": [
+   {
+    "title": "1-1 二元一次方程式",
+    "points": [
+     "【觀念】列出二元一次式及其值",
+     "【觀念】二元一次式的化簡",
+     "【觀念】列二元一次方程式",
+     "【觀念】檢驗及找出二元一次方程式的解"
+    ]
+   },
+   {
+    "title": "1-2 解二元一次聯立方程式",
+    "points": [
+     "【觀念】二元一次聯立方程式及解的意義",
+     "【觀念】代入消去法",
+     "【觀念】加減消去法"
+    ]
+   },
+   {
+    "title": "1-3 應用問題",
+    "points": [
+     "【觀念】合理性驗證"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m7b-c01"
+ },
+ "數學|直角坐標與二元一次方程式的圖形": {
+  "subj": "數學",
+  "junyiTitle": "【七下】第二章 直角坐標與二元一次方程式的圖形",
+  "sections": [
+   {
+    "title": "2-1 直角坐標平面",
+    "points": [
+     "【觀念】坐標平面上的點",
+     "【觀念】找出點坐標",
+     "【觀念】判別點坐標的象限",
+     "【觀念】依據點坐標的性質符號判別象限"
+    ]
+   },
+   {
+    "title": "2-2 二元一次方程式的圖形",
+    "points": [
+     "【觀念】二元一次方程式解的圖形：ax+by=c",
+     "【觀念】二元一次方程式解的圖形：通過的象限、鉛垂線、水平線",
+     "【觀念】求圖形通過已知點的二元一次方程式",
+     "【觀念】二元一次聯立方程式的圖形",
+     "【觀念】二元一次聯立方程式圖形應用"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m7b-c02"
+ },
+ "數學|比例": {
+  "subj": "數學",
+  "junyiTitle": "【七下】第三章 比例",
+  "sections": [
+   {
+    "title": "3-1 比例式",
+    "points": [
+     "【觀念】比與比值",
+     "【觀念】相等的比",
+     "【觀念】比例式的運算性質",
+     "【觀念】比例式的運算"
+    ]
+   },
+   {
+    "title": "3-2 正比與反比",
+    "points": [
+     "【觀念】正比",
+     "【觀念】正比的應用",
+     "【觀念】反比",
+     "【觀念】反比的應用",
+     "【觀念】正反比的判斷"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m7b-c03"
+ },
+ "數學|一元一次不等式": {
+  "subj": "數學",
+  "junyiTitle": "【七下】第四章 一元一次不等式",
+  "sections": [
+   {
+    "title": "4-1 一元一次不等式的解及圖示",
+    "points": [
+     "【觀念】認識一元一次不等式",
+     "【觀念】將具體情境列成一元一次不等式",
+     "【觀念】判斷不等式的解",
+     "【觀念】一元一次不等式的解與圖示"
+    ]
+   },
+   {
+    "title": "4-2 解一元一次不等式及其應用",
+    "points": [
+     "【觀念】解一元一次不等式：不等式的加減運算性質",
+     "【觀念】解一元一次不等式：不等式的乘除運算性質",
+     "【觀念】一元一次不等式的應用(1)",
+     "【觀念】一元一次不等式的應用(2)"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m7b-c04"
+ },
+ "數學|統計圖表與統計數據": {
+  "subj": "數學",
+  "junyiTitle": "【七下】第五章 統計圖表與統計數據",
+  "sections": [
+   {
+    "title": "1. 生活中的統計圖表",
+    "points": []
+   },
+   {
+    "title": "2. 列聯表",
+    "points": []
+   },
+   {
+    "title": "3. 次數分配與直方圖、折線圖",
+    "points": []
+   },
+   {
+    "title": "4. 平均數",
+    "points": []
+   },
+   {
+    "title": "5. 中位數",
+    "points": []
+   },
+   {
+    "title": "6. 眾數",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m7b-c05"
+ },
+ "數學|線對稱與三視圖": {
+  "subj": "數學",
+  "junyiTitle": "【七下】第六章 線對稱與三視圖",
+  "sections": [
+   {
+    "title": "1. 簡單圖形與其符號",
+    "points": []
+   },
+   {
+    "title": "2. 垂直與平分",
+    "points": []
+   },
+   {
+    "title": "3. 線對稱",
+    "points": []
+   },
+   {
+    "title": "4. 三視圖",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m7b-c06"
+ },
+ "數學|乘法公式與多項式": {
+  "subj": "數學",
+  "junyiTitle": "【八上】第一章 乘法公式與多項式",
+  "sections": [
+   {
+    "title": "1-1 乘法公式",
+    "points": [
+     "【觀念】(a+b)(c+d)=ac+ad+bc+bd",
+     "【觀念】(a+b)^2=a^2+2ab+b^2",
+     "【觀念】(a-b)^2=a^2-2ab+b^2",
+     "【觀念】(a+b)(a-b)=a^2-b^2"
+    ]
+   },
+   {
+    "title": "1-2 多項式的加減",
+    "points": [
+     "【觀念】認識多項式",
+     "【觀念】多項式的加法",
+     "【觀念】多項式的減法"
+    ]
+   },
+   {
+    "title": "1-3 多項式的乘除",
+    "points": [
+     "【觀念】多項式的乘法",
+     "【觀念】多項式的除法：二次式除以單項式、一次式",
+     "【觀念】多項式的除法：關係與綜合應用",
+     "【觀念】多項式的除法：缺項補零、商式係數為分數"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m8a-c01"
+ },
+ "數學|平方根與畢氏定理": {
+  "subj": "數學",
+  "junyiTitle": "【八上】第二章 平方根與畢氏定理",
+  "sections": [
+   {
+    "title": "2-1 平方根的意義",
+    "points": [
+     "【觀念】平方根的意義"
+    ]
+   },
+   {
+    "title": "2-2 根式的運算",
+    "points": [
+     "什麼是根式",
+     "【觀念】根式的表示與乘法運算",
+     "【觀念】根號的化簡",
+     "【觀念】根式的除法運算",
+     "【觀念】最簡根式與有理化",
+     "根式的加減法運算",
+     "【觀念】根式的四則運算"
+    ]
+   },
+   {
+    "title": "2-3 畢氏定理",
+    "points": [
+     "【觀念】畢氏定理的發現",
+     "【觀念】畢氏定理的應用：基礎",
+     "【觀念】畢氏定理的應用：進階",
+     "【觀念】畢氏定理在生活中的應用",
+     "【觀念】兩點距離公式與應用",
+     "直角坐標平面上兩點的距離公式"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m8a-c02"
+ },
+ "數學|因式分解": {
+  "subj": "數學",
+  "junyiTitle": "【八上】第三章 因式分解",
+  "sections": [
+   {
+    "title": "3-1 提公因式與乘法公式作因式分解",
+    "points": [
+     "【觀念】因式與倍式",
+     "因式與倍式的意義",
+     "【觀念】利用除法做因式分解",
+     "因式分解的意義",
+     "【觀念】提公因式法",
+     "公因式",
+     "利用提出公因式做因式分解",
+     "【觀念】分組提公因式法",
+     "(𝑎﹣𝑏) 與 (𝑏﹣𝑎) 的差異",
+     "【觀念】利用平方差公式因式分解 1",
+     "【觀念】利用平方差公式因式分解 2",
+     "利用平方差公式因式分解"
+    ]
+   },
+   {
+    "title": "3-2 利用十字交乘法因式分解",
+    "points": [
+     "【觀念】二次項係數為 1 的十字交乘法",
+     "【觀念】利用係數的特性做二次項係數為 1 的十字交乘法",
+     "利用十字交乘法因式分解：二次項係數為 1",
+     "【觀念】二次項係數不為 1 的十字交乘法",
+     "【觀念】利用係數的特性做二次項係數不為 1 的十字交乘法"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m8a-c03"
+ },
+ "數學|一元二次方程式": {
+  "subj": "數學",
+  "junyiTitle": "【八上】第四章 一元二次方程式",
+  "sections": [
+   {
+    "title": "4-1 因式分解法解一元二次方程式",
+    "points": [
+     "【觀念】一元二次方程式及其解的意義",
+     "一元二次方程式的意義",
+     "一元二次方程式的解 ( 根 )",
+     "【觀念】因式分解法解一元二次方程式",
+     "A×B＝0，則 A＝0或 B＝0",
+     "利用提公因式解一元二次方程式",
+     "利用乘法公式解一元二次方程式",
+     "【觀念】化簡方程式後再求解"
+    ]
+   },
+   {
+    "title": "4-2 配方法與公式解",
+    "points": [
+     "【觀念】利用平方根概念解一元二次方程式",
+     "利用平方根概念解方程式",
+     "【觀念】配完全平方式",
+     "配完全平方式",
+     "【觀念】配方法解一元二次方程式",
+     "配方法的技巧",
+     "【觀念】一元二次方程式的公式解",
+     "判別式與公式解"
+    ]
+   },
+   {
+    "title": "4-3 應用問題",
+    "points": [
+     "如何列式 1",
+     "如何列式 2",
+     "如何列式 3",
+     "如何列式 4",
+     "如何列式 5"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m8a-c04"
+ },
+ "數學|統計資料處理": {
+  "subj": "數學",
+  "junyiTitle": "【八上】第五章 統計資料處理",
+  "sections": [
+   {
+    "title": "5-1 統計資料處理",
+    "points": [
+     "相對次數分配表",
+     "相對次數分配折線圖",
+     "【觀念】次數與累積次數的意義",
+     "累積次數分配表",
+     "累積次數分配折線圖",
+     "【概念】相對次數、累積相對次數的意義",
+     "累積相對次數分配表",
+     "【概念】累積相對次數折線圖的繪製與意義",
+     "累積相對次數分配折線圖"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m8a-c05"
+ },
+ "數學|數列與級數": {
+  "subj": "數學",
+  "junyiTitle": "【八下】第一章 數列與級數",
+  "sections": [
+   {
+    "title": "1-1 認識數列與等差數列",
+    "points": [
+     "【觀念】規律的數列",
+     "【觀念】等差數列的一般項與公差",
+     "【觀念】等差數列求項數與公差",
+     "【觀念】等差數列與數型關係",
+     "【觀念】等差數列的應用",
+     "【觀念】等差中項"
+    ]
+   },
+   {
+    "title": "1-2 等差級數",
+    "points": [
+     "【觀念】等差級數求和（利用首項、末項、項數）",
+     "【觀念】等差級數求和（利用等差數列的概念）",
+     "【觀念】由等差級數和反求項數與第幾項",
+     "【觀念】等差級數和的最大值或最小值",
+     "【觀念】等差級數的應用問題1",
+     "【觀念】等差級數的應用問題2"
+    ]
+   },
+   {
+    "title": "1-3 等比數列",
+    "points": [
+     "【觀念】等比數列基本觀念",
+     "【觀念】等比數列求某項",
+     "【觀念】等差數列與等比數列連結"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m8b-c01"
+ },
+ "數學|線型函數與其圖形": {
+  "subj": "數學",
+  "junyiTitle": "【八下】第二章 線型函數與其圖形",
+  "sections": [
+   {
+    "title": "2-1 線型函數與其圖形",
+    "points": [
+     "【觀念】函數與對應變化關係",
+     "【觀念】函數值",
+     "【觀念】常數函數與一次函數",
+     "【觀念】函數圖形的判別",
+     "【觀念】函數的應用"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m8b-c02"
+ },
+ "數學|三角形的基本性質": {
+  "subj": "數學",
+  "junyiTitle": "【八下】第三章 三角形的基本性質",
+  "sections": [
+   {
+    "title": "3-1 內角與外角",
+    "points": [
+     "【觀念】認識角與兩角關係",
+     "【觀念】三角形的內角應用",
+     "【觀念】三角形的內角",
+     "【觀念】三角形的外角",
+     "【觀念】三角形的外角定理",
+     "【觀念】三角形外角和定理與應用",
+     "【觀念】多邊形內角和"
+    ]
+   },
+   {
+    "title": "3-2 基本的尺規作圖",
+    "points": [
+     "【觀念】尺規作圖複製線段與角",
+     "【觀念】尺規作圖平分線段與平分角",
+     "【觀念】尺規作圖2^n等分已知線段、角",
+     "【觀念】尺規作圖垂線，三角形的高與中線"
+    ]
+   },
+   {
+    "title": "3-3 三角形的全等性質",
+    "points": [
+     "【觀念】認識全等圖形",
+     "【觀念】SSS全等性質",
+     "【觀念】RHS全等性質",
+     "【觀念】ASA全等性質"
+    ]
+   },
+   {
+    "title": "3-4 中垂線與角平分線性質",
+    "points": [
+     "【觀念】中垂線性質與逆性質",
+     "【觀念】角平分線性質與逆性質",
+     "【觀念】正三角形高與面積公式",
+     "【觀念】幾何證明應用"
+    ]
+   },
+   {
+    "title": "3-5 三角形的邊角關係",
+    "points": [
+     "【觀念】三角形邊長不等關係",
+     "【觀念】三角形邊角不等關係",
+     "【觀念】三角形邊角不等關係應用"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m8b-c03"
+ },
+ "數學|平行與四邊形": {
+  "subj": "數學",
+  "junyiTitle": "【八下】第四章 平行與四邊形",
+  "sections": [
+   {
+    "title": "4-1 平行線與截角性質",
+    "points": [
+     "【觀念】摺紙與平行",
+     "【觀念】平行線截角性質",
+     "【觀念】平行線截角性質及應用",
+     "【觀念】兩平行線的應用",
+     "【觀念】平行的應用"
+    ]
+   },
+   {
+    "title": "4-2 平行四邊形",
+    "points": [
+     "【觀念】平行四邊形的性質1",
+     "【觀念】平行四邊形的性質2",
+     "【觀念】平行四邊形的應用1",
+     "【觀念】平行四邊形的應用2",
+     "【觀念】平行四邊形的判別性質1"
+    ]
+   },
+   {
+    "title": "4-3 特殊四邊形",
+    "points": [
+     "【觀念】箏形的性質與應用",
+     "【觀念】菱形的性質與應用",
+     "【觀念】長方形的性質與應用",
+     "【觀念】正方形的性質與應用",
+     "【觀念】梯形的性質與應用",
+     "【觀念】等腰梯形的性質與應用"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m8b-c04"
+ },
+ "數學|相似形與三角比": {
+  "subj": "數學",
+  "junyiTitle": "【九上】第一章 相似形與三角比",
+  "sections": [
+   {
+    "title": "1-1 連比",
+    "points": [
+     "【觀念】連比與連比例式",
+     "【觀念】連比例式的運算性質",
+     "連比例性質的運用"
+    ]
+   },
+   {
+    "title": "1-2 比例線段",
+    "points": [
+     "【觀念】三角形截比例線段1",
+     "【觀念】 三角形截比例線段2",
+     "【觀念】平行線截比例線段的應用",
+     "【觀念】三角形兩邊中點連線性質"
+    ]
+   },
+   {
+    "title": "1-3 相似多邊形",
+    "points": [
+     "【觀念】判斷相似多邊形",
+     "【觀念】AA相似形",
+     "【觀念】SAS相似形",
+     "【觀念】SSS相似形"
+    ]
+   },
+   {
+    "title": "1-4 相似三角形的應用與三角比",
+    "points": [
+     "【觀念】相似三角形的幾何性質",
+     "【觀念】特殊相似直角三角形",
+     "【觀念】特殊直角三角形的三角比",
+     "特殊直角三角形的邊長關係（30-60-90） 2",
+     "特殊直角三角形的邊長關係（45-45-90） 2",
+     "直角三角形的邊長比值"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m9a-c01"
+ },
+ "數學|圓形": {
+  "subj": "數學",
+  "junyiTitle": "【九上】第二章 圓形",
+  "sections": [
+   {
+    "title": "2-1 點、線、圓",
+    "points": [
+     "【觀念】圓的幾何特質",
+     "【觀念】圓弧與弧長計算",
+     "【觀念】扇形與扇形面積計算",
+     "【觀念】點到圓的位置關係",
+     "【觀念】直線到圓的位置關係",
+     "【觀念】圓切線性質",
+     "【觀念】弦與弦心距",
+     "【觀念】弦心距的應用"
+    ]
+   },
+   {
+    "title": "2-2 圓心角與圓周角",
+    "points": [
+     "【觀念】認識圓心角",
+     "等弧對等弦，等弦對等弧",
+     "【觀念】認識圓周角",
+     "平行弦截等弧",
+     "【觀念】圓內接四邊形"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m9a-c02"
+ },
+ "數學|推理證明與三角形的心": {
+  "subj": "數學",
+  "junyiTitle": "【九上】第三章 推理證明與三角形的心",
+  "sections": [
+   {
+    "title": "3-1 推理證明",
+    "points": [
+     "【觀念】證明的思維",
+     "【觀念】證明的方法：舉反例",
+     "認識證明",
+     "【觀念】幾何推理",
+     "【觀念】代數推理"
+    ]
+   },
+   {
+    "title": "3-2 三角形的心",
+    "points": [
+     "【觀念】三角形的外心與外接圓",
+     "到三點等距離",
+     "三角形的外心性質",
+     "【觀念】三角形的內心與內切圓",
+     "三角形的三內角平分線",
+     "什麼是內心",
+     "三角形內切圓與面積關係",
+     "等腰三角形的內切圓半徑",
+     "直角三角形內切圓半徑",
+     "內心與面積",
+     "三角形內心在面積上的應用",
+     "三角形內心性質的角度應用"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m9a-c03"
+ },
+ "數學|二次函數": {
+  "subj": "數學",
+  "junyiTitle": "【九下】第一章 二次函數",
+  "sections": [
+   {
+    "title": "1-1 基本二次函數圖形",
+    "points": [
+     "【概念】理解二次函數的意義",
+     "【概念】二次函数 y=ax^2 的圖形和性質",
+     "【概念】二次函数 y=ax^2+k 的圖形和性質"
+    ]
+   },
+   {
+    "title": "1-2 二次函數圖形與最大值、最小值",
+    "points": [
+     "【概念】二次函数 a（x－h）^2  的圖形和性質",
+     "【概念】二次函數 y＝a（x－h）^2+k 的圖形和性質：上下平移",
+     "【概念】二次函數 y＝a（x－h）^2+k 的圖形和性質：左右平移",
+     "【概念】二次函數 y＝a（x－h）^2+k 的圖形和性質：任意平移"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m9b-c01"
+ },
+ "數學|統計與機率": {
+  "subj": "數學",
+  "junyiTitle": "【九下】第二章 統計與機率",
+  "sections": [
+   {
+    "title": "2-1 四分位數與盒狀圖",
+    "points": [
+     "【概念】能理解第一（Q1）第二（Q2）第三（Q3）四分位數的意義。",
+     "【概念】能認識全距及四分位距的意義。"
+    ]
+   },
+   {
+    "title": "2-2 機率",
+    "points": [
+     "【概念】機率的意義",
+     "【概念】透過樹狀圖認識事件發生的可能性",
+     "【概念】對稱性情境下事件的機率",
+     "【概念】列表求機率"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m9b-c02"
+ },
+ "數學|立體圖形": {
+  "subj": "數學",
+  "junyiTitle": "【九下】第三章 立體圖形",
+  "sections": [
+   {
+    "title": "3-1 角柱與圓柱",
+    "points": [
+     "【概念】認識多面體",
+     "【概念】直角柱",
+     "【概念】線與面的平行關係",
+     "【概念】線與面的垂直關係",
+     "【概念】空間中直線的位置關係",
+     "【概念】圓柱與圓椎"
+    ]
+   },
+   {
+    "title": "3-2 角錐與圓錐",
+    "points": [
+     "【概念】直角錐",
+     "【概念】立體圖形的展開圖"
+    ]
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-m9b-c03"
+ },
+ "生物|科學方法": {
+  "subj": "生物",
+  "junyiTitle": "【緒論】科學方法",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/s4bsw-"
+ },
+ "生物|生命世界": {
+  "subj": "生物",
+  "junyiTitle": "【七上】生命世界",
+  "sections": [
+   {
+    "title": "生命現象",
+    "points": []
+   },
+   {
+    "title": "生命的起源",
+    "points": []
+   },
+   {
+    "title": "生物的生存環境",
+    "points": []
+   },
+   {
+    "title": "延伸學習",
+    "points": []
+   },
+   {
+    "title": "生物圈",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4bsm-"
+ },
+ "生物|細胞": {
+  "subj": "生物",
+  "junyiTitle": "【七上】細胞",
+  "sections": [
+   {
+    "title": "細胞的構造",
+    "points": []
+   },
+   {
+    "title": "生物體的組成層次",
+    "points": []
+   },
+   {
+    "title": "物質進出細胞的方式",
+    "points": []
+   },
+   {
+    "title": "延伸學習",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4bsb-"
+ },
+ "生物|營養": {
+  "subj": "生物",
+  "junyiTitle": "【七上】營養",
+  "sections": [
+   {
+    "title": "養分與能量",
+    "points": []
+   },
+   {
+    "title": "延伸學習",
+    "points": []
+   },
+   {
+    "title": "酵素",
+    "points": []
+   },
+   {
+    "title": "植物獲得養分",
+    "points": []
+   },
+   {
+    "title": "動物獲得養分",
+    "points": []
+   },
+   {
+    "title": "延伸學習",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4byy-"
+ },
+ "生物|運輸": {
+  "subj": "生物",
+  "junyiTitle": "【七上】運輸",
+  "sections": [
+   {
+    "title": "植物的運輸構造",
+    "points": []
+   },
+   {
+    "title": "植物體內的物質運輸",
+    "points": []
+   },
+   {
+    "title": "動物循環系統的組成",
+    "points": []
+   },
+   {
+    "title": "動物的循環系統",
+    "points": []
+   },
+   {
+    "title": "延伸學習",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4bys-"
+ },
+ "生物|協調": {
+  "subj": "生物",
+  "junyiTitle": "【七上】協調",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "植物對環境的感應",
+    "points": []
+   },
+   {
+    "title": "動物的神經系統",
+    "points": []
+   },
+   {
+    "title": "動物的內分泌系統",
+    "points": []
+   },
+   {
+    "title": "動物行為",
+    "points": []
+   },
+   {
+    "title": "出場券",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4bxd-"
+ },
+ "生物|恆定": {
+  "subj": "生物",
+  "junyiTitle": "【七上】恆定",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "呼吸作用與呼吸運動",
+    "points": []
+   },
+   {
+    "title": "體溫的恆定",
+    "points": []
+   },
+   {
+    "title": "血糖的恆定",
+    "points": []
+   },
+   {
+    "title": "水分的恆定",
+    "points": []
+   },
+   {
+    "title": "廢物的排泄與調節",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4bhd-"
+ },
+ "生物|生殖": {
+  "subj": "生物",
+  "junyiTitle": "【七下】生殖",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "細胞分裂",
+    "points": []
+   },
+   {
+    "title": "無性生殖",
+    "points": []
+   },
+   {
+    "title": "有性生殖",
+    "points": []
+   },
+   {
+    "title": "延伸學習",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4bsz-"
+ },
+ "生物|遺傳": {
+  "subj": "生物",
+  "junyiTitle": "【七下】遺傳",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "遺傳法則",
+    "points": []
+   },
+   {
+    "title": "基因的遺傳",
+    "points": []
+   },
+   {
+    "title": "突變與遺傳疾病",
+    "points": []
+   },
+   {
+    "title": "生物科技的應用",
+    "points": []
+   },
+   {
+    "title": "延伸學習",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4byc-"
+ },
+ "生物|演化": {
+  "subj": "生物",
+  "junyiTitle": "【七下】演化",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "演化學說",
+    "points": []
+   },
+   {
+    "title": "演化證據",
+    "points": []
+   },
+   {
+    "title": "生物的演化",
+    "points": []
+   },
+   {
+    "title": "延伸學習",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4byh-"
+ },
+ "生物|分類": {
+  "subj": "生物",
+  "junyiTitle": "【七下】分類",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "生物的命名與分類",
+    "points": []
+   },
+   {
+    "title": "原核生物界",
+    "points": []
+   },
+   {
+    "title": "原生生物界",
+    "points": []
+   },
+   {
+    "title": "真菌界",
+    "points": []
+   },
+   {
+    "title": "植物界",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4bfl-"
+ },
+ "生物|生態": {
+  "subj": "生物",
+  "junyiTitle": "【七下】生態",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "生態系的組成",
+    "points": []
+   },
+   {
+    "title": "生物間的交互作用",
+    "points": []
+   },
+   {
+    "title": "能量與物質的流動",
+    "points": []
+   },
+   {
+    "title": "生態系",
+    "points": []
+   },
+   {
+    "title": "延伸學習",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4bst-"
+ },
+ "生物|環境": {
+  "subj": "生物",
+  "junyiTitle": "【七下】環境",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "生物多樣性",
+    "points": []
+   },
+   {
+    "title": "人類對環境的衝擊",
+    "points": []
+   },
+   {
+    "title": "生物的保育",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4bhj-"
+ },
+ "理化|LIS自然系列－物理": {
+  "subj": "理化",
+  "junyiTitle": "【暖身】LIS自然系列－物理",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/junyixlis2"
+ },
+ "理化|基本測量與科學概念": {
+  "subj": "理化",
+  "junyiTitle": "【八上】基本測量與科學概念",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "實驗與測量",
+    "points": []
+   },
+   {
+    "title": "長度與體積的測量",
+    "points": []
+   },
+   {
+    "title": "質量的測量",
+    "points": []
+   },
+   {
+    "title": "密度與科學概念",
+    "points": []
+   },
+   {
+    "title": "歷屆試題",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zgb-"
+ },
+ "理化|認識物質": {
+  "subj": "理化",
+  "junyiTitle": "【八上】認識物質",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "物質的三態與性質",
+    "points": []
+   },
+   {
+    "title": "水溶液",
+    "points": []
+   },
+   {
+    "title": "空氣的成份與特性",
+    "points": []
+   },
+   {
+    "title": "補充資料",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zrs-"
+ },
+ "理化|波動與聲音": {
+  "subj": "理化",
+  "junyiTitle": "【八上】波動與聲音",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "波的傳播",
+    "points": []
+   },
+   {
+    "title": "聲音的形成與應用",
+    "points": []
+   },
+   {
+    "title": "多變的聲音",
+    "points": []
+   },
+   {
+    "title": "聲波的應用",
+    "points": []
+   },
+   {
+    "title": "歷屆試題",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zpd-"
+ },
+ "理化|光、影像與顏色": {
+  "subj": "理化",
+  "junyiTitle": "【八上】光、影像與顏色",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "光的傳播",
+    "points": []
+   },
+   {
+    "title": "反射定律與面鏡成像",
+    "points": []
+   },
+   {
+    "title": "光的折射",
+    "points": []
+   },
+   {
+    "title": "透鏡的成像",
+    "points": []
+   },
+   {
+    "title": "色散與顏色",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zgi-"
+ },
+ "理化|溫度與熱": {
+  "subj": "理化",
+  "junyiTitle": "【八上】溫度與熱",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "溫度與溫度計",
+    "points": []
+   },
+   {
+    "title": "熱量與熱平衡",
+    "points": []
+   },
+   {
+    "title": "比熱",
+    "points": []
+   },
+   {
+    "title": "熱量的傳播",
+    "points": []
+   },
+   {
+    "title": "熱對物質的影響",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zwd-"
+ },
+ "理化|物質的基本結構": {
+  "subj": "理化",
+  "junyiTitle": "【八上】物質的基本結構",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "元素與化合物",
+    "points": []
+   },
+   {
+    "title": "生活中常見的元素",
+    "points": []
+   },
+   {
+    "title": "物質結構與原子",
+    "points": []
+   },
+   {
+    "title": "週期表",
+    "points": []
+   },
+   {
+    "title": "分子與化學式",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zwz-"
+ },
+ "理化|LIS自然系列－化學": {
+  "subj": "理化",
+  "junyiTitle": "【暖身】LIS自然系列－化學",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/junyixlis"
+ },
+ "理化|化學反應": {
+  "subj": "理化",
+  "junyiTitle": "【八下】化學反應",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "化學反應與質量守恆",
+    "points": []
+   },
+   {
+    "title": "化學反應實驗",
+    "points": []
+   },
+   {
+    "title": "原子量與分子量",
+    "points": []
+   },
+   {
+    "title": "莫耳與亞佛加厥數",
+    "points": []
+   },
+   {
+    "title": "化學反應式",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zhs-"
+ },
+ "理化|氧化還原反應": {
+  "subj": "理化",
+  "junyiTitle": "【八下】氧化還原反應",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "物質的氧化",
+    "points": []
+   },
+   {
+    "title": "物質的活性",
+    "points": []
+   },
+   {
+    "title": "氧化與還原",
+    "points": []
+   },
+   {
+    "title": "氧化還原的應用",
+    "points": []
+   },
+   {
+    "title": "歷屆試題",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zyh-"
+ },
+ "理化|電解質和酸鹼鹽": {
+  "subj": "理化",
+  "junyiTitle": "【八下】電解質和酸鹼鹽",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "電解質",
+    "points": []
+   },
+   {
+    "title": "酸與鹼的性質",
+    "points": []
+   },
+   {
+    "title": "常見的酸與鹼",
+    "points": []
+   },
+   {
+    "title": "容積莫耳濃度與溶液調配",
+    "points": []
+   },
+   {
+    "title": "pH值與酸鹼指示劑",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zdg-"
+ },
+ "理化|反應速率與平衡": {
+  "subj": "理化",
+  "junyiTitle": "【八下】反應速率與平衡",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "反應速率的簡介",
+    "points": []
+   },
+   {
+    "title": "濃度與接觸面積對反應速率的影響",
+    "points": []
+   },
+   {
+    "title": "溫度對反應速率的影響",
+    "points": []
+   },
+   {
+    "title": "催化劑對反應速率的影響",
+    "points": []
+   },
+   {
+    "title": "可逆反應與平衡",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zfi-"
+ },
+ "理化|有機化合物": {
+  "subj": "理化",
+  "junyiTitle": "【八下】有機化合物",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "認識有機化合物",
+    "points": []
+   },
+   {
+    "title": "有機化合物的種類與性質",
+    "points": []
+   },
+   {
+    "title": "烴類的介紹",
+    "points": []
+   },
+   {
+    "title": "醇類與有機酸類的介紹",
+    "points": []
+   },
+   {
+    "title": "酯類的介紹",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zyg-"
+ },
+ "理化|力與壓力": {
+  "subj": "理化",
+  "junyiTitle": "【八下】力與壓力",
+  "sections": [
+   {
+    "title": "課前暖身",
+    "points": []
+   },
+   {
+    "title": "力的介紹",
+    "points": []
+   },
+   {
+    "title": "力的測量",
+    "points": []
+   },
+   {
+    "title": "合力與力的平衡",
+    "points": []
+   },
+   {
+    "title": "摩擦力",
+    "points": []
+   },
+   {
+    "title": "生活中的摩擦力",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zyl-"
+ },
+ "理化|直線運動": {
+  "subj": "理化",
+  "junyiTitle": "【九上】直線運動",
+  "sections": [
+   {
+    "title": "時間的測量",
+    "points": []
+   },
+   {
+    "title": "路徑長與位移",
+    "points": []
+   },
+   {
+    "title": "速率與速度",
+    "points": []
+   },
+   {
+    "title": "加速度運動",
+    "points": []
+   },
+   {
+    "title": "自由落體與拋射",
+    "points": []
+   },
+   {
+    "title": "歷屆試題",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zzs-"
+ },
+ "理化|力與運動": {
+  "subj": "理化",
+  "junyiTitle": "【九上】力與運動",
+  "sections": [
+   {
+    "title": "牛頓第一運動定律（慣性運動）",
+    "points": []
+   },
+   {
+    "title": "牛頓第二運動定律（運動定律）",
+    "points": []
+   },
+   {
+    "title": "牛頓第三運動定律（作用力與反作用力定律）",
+    "points": []
+   },
+   {
+    "title": "圓周運動與萬有引力",
+    "points": []
+   },
+   {
+    "title": "歷屆試題",
+    "points": []
+   },
+   {
+    "title": "補充資料",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zud-"
+ },
+ "理化|功與能": {
+  "subj": "理化",
+  "junyiTitle": "【九上】功與能",
+  "sections": [
+   {
+    "title": "功與功率",
+    "points": []
+   },
+   {
+    "title": "功與動能",
+    "points": []
+   },
+   {
+    "title": "位能",
+    "points": []
+   },
+   {
+    "title": "力學能守恆定律",
+    "points": []
+   },
+   {
+    "title": "能量守恆定律與能源",
+    "points": []
+   },
+   {
+    "title": "力矩與轉動",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zzl-"
+ },
+ "理化|電流、電壓與歐姆定律": {
+  "subj": "理化",
+  "junyiTitle": "【九上】電流、電壓與歐姆定律",
+  "sections": [
+   {
+    "title": "靜電",
+    "points": []
+   },
+   {
+    "title": "電流",
+    "points": []
+   },
+   {
+    "title": "電壓",
+    "points": []
+   },
+   {
+    "title": "歐姆定律與電阻",
+    "points": []
+   },
+   {
+    "title": "電路元件的串聯與並聯",
+    "points": []
+   },
+   {
+    "title": "歷屆試題",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zdl-"
+ },
+ "理化|電流的熱效應與化學反應": {
+  "subj": "理化",
+  "junyiTitle": "【九下】電流的熱效應與化學反應",
+  "sections": [
+   {
+    "title": "電流的熱效應",
+    "points": []
+   },
+   {
+    "title": "電功率",
+    "points": []
+   },
+   {
+    "title": "電力輸送",
+    "points": []
+   },
+   {
+    "title": "家庭用電安全",
+    "points": []
+   },
+   {
+    "title": "伏打電池",
+    "points": []
+   },
+   {
+    "title": "常見的電池",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zdz-"
+ },
+ "理化|電與磁": {
+  "subj": "理化",
+  "junyiTitle": "【九下】電與磁",
+  "sections": [
+   {
+    "title": "磁鐵、磁力線與磁場",
+    "points": []
+   },
+   {
+    "title": "電流的磁效應",
+    "points": []
+   },
+   {
+    "title": "電流與磁場的交互作用",
+    "points": []
+   },
+   {
+    "title": "電磁感應",
+    "points": []
+   },
+   {
+    "title": "歷屆試題",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/s4zdt-"
+ },
+ "理化|台灣吧之實驗科學吧": {
+  "subj": "理化",
+  "junyiTitle": "【暖身】台灣吧之實驗科學吧",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/tw_science_exp"
+ },
+ "地科|水與陸地": {
+  "subj": "地科",
+  "junyiTitle": "水與陸地",
+  "sections": [
+   {
+    "title": "地球上的水",
+    "points": []
+   },
+   {
+    "title": "地貌的改變與平衡",
+    "points": []
+   },
+   {
+    "title": "岩石與礦物",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/njesl"
+ },
+ "地科|板塊運動與地球歷史": {
+  "subj": "地科",
+  "junyiTitle": "板塊運動與地球歷史",
+  "sections": [
+   {
+    "title": "地球的構造",
+    "points": []
+   },
+   {
+    "title": "板塊運動",
+    "points": []
+   },
+   {
+    "title": "岩層記錄的地球歷史",
+    "points": []
+   },
+   {
+    "title": "臺灣地區的板塊與地貌",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/njebd"
+ },
+ "地科|運動中的天體": {
+  "subj": "地科",
+  "junyiTitle": "運動中的天體",
+  "sections": [
+   {
+    "title": "我們的宇宙",
+    "points": []
+   },
+   {
+    "title": "轉動的地球",
+    "points": []
+   },
+   {
+    "title": "日地月相對運動",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/njeut"
+ },
+ "地科|千變萬化的天氣": {
+  "subj": "地科",
+  "junyiTitle": "千變萬化的天氣",
+  "sections": [
+   {
+    "title": "大氣的組成和結構",
+    "points": []
+   },
+   {
+    "title": "天氣變化",
+    "points": []
+   },
+   {
+    "title": "氣團和鋒面",
+    "points": []
+   },
+   {
+    "title": "臺灣的氣象災害",
+    "points": []
+   },
+   {
+    "title": "延伸學習",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/nject"
+ },
+ "地科|全球變遷": {
+  "subj": "地科",
+  "junyiTitle": "全球變遷",
+  "sections": [
+   {
+    "title": "臭氧層與臭氧洞",
+    "points": []
+   },
+   {
+    "title": "溫室效應與全球暖化",
+    "points": []
+   },
+   {
+    "title": "海洋與氣候變化",
+    "points": []
+   },
+   {
+    "title": "人與自然的互動",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/njeuf"
+ },
+ "地科|歷屆試題": {
+  "subj": "地科",
+  "junyiTitle": "歷屆試題",
+  "sections": [
+   {
+    "title": "試題篇",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/njeax"
+ },
+ "英文|↗︎JutorAI英語家教": {
+  "subj": "英文",
+  "junyiTitle": "↗︎Jutor AI 英語家教",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/jutor"
+ },
+ "英文|適翰林版｜課文單字例句": {
+  "subj": "英文",
+  "junyiTitle": "適翰林版｜課文單字例句",
+  "sections": [
+   {
+    "title": "九年級（114 三上）",
+    "points": []
+   },
+   {
+    "title": "九年級（114 三下）",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/h-j-vocab-9"
+ },
+ "英文|適康軒版｜課文單字例句": {
+  "subj": "英文",
+  "junyiTitle": "適康軒版｜課文單字例句",
+  "sections": [
+   {
+    "title": "九年級（114 三上）",
+    "points": []
+   },
+   {
+    "title": "九年級（114 三下）",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/k-j-vocab-9"
+ },
+ "英文|適南一版｜課文單字例句": {
+  "subj": "英文",
+  "junyiTitle": "適南一版｜課文單字例句",
+  "sections": [
+   {
+    "title": "九年級（114 三上）",
+    "points": []
+   },
+   {
+    "title": "九年級（114 三下）",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/n-j-vocab-9"
+ },
+ "英文|國中英文基礎單字影片": {
+  "subj": "英文",
+  "junyiTitle": "國中英文基礎單字影片",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/a-j-vocab"
+ },
+ "英文|課外補充": {
+  "subj": "英文",
+  "junyiTitle": "課外補充",
+  "sections": [
+   {
+    "title": "酷英基本學習",
+    "points": []
+   },
+   {
+    "title": "因材網",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/eng-junior09-others"
+ },
+ "英文|國中會考｜Jutor歷屆試題線上測驗平台": {
+  "subj": "英文",
+  "junyiTitle": "國中會考 ｜Jutor 歷屆試題線上測驗平台",
+  "sections": [
+   {
+    "title": "🎧 聽力測驗區",
+    "points": []
+   },
+   {
+    "title": "📖 閱讀題本區",
+    "points": []
+   },
+   {
+    "title": "會考衝刺單字包",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/new-topic-a3b0f1"
+ },
+ "國文|論語選": {
+  "subj": "國文",
+  "junyiTitle": "論語選",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c1-01"
+ },
+ "國文|兒時記趣沈復": {
+  "subj": "國文",
+  "junyiTitle": "兒時記趣 沈復",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c1-02"
+ },
+ "國文|賣油翁歐陽脩": {
+  "subj": "國文",
+  "junyiTitle": "賣油翁 歐陽脩",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c1-03"
+ },
+ "國文|五柳先生傳陶淵明": {
+  "subj": "國文",
+  "junyiTitle": "五柳先生傳 陶淵明",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c1-04"
+ },
+ "國文|記承天夜遊蘇軾": {
+  "subj": "國文",
+  "junyiTitle": "記承天夜遊 蘇軾",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c1-05"
+ },
+ "國文|晏子使楚": {
+  "subj": "國文",
+  "junyiTitle": "晏子使楚",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c1-06"
+ },
+ "國文|閱讀素養教育": {
+  "subj": "國文",
+  "junyiTitle": "閱讀素養教育",
+  "sections": [
+   {
+    "title": "識字與寫字",
+    "points": []
+   },
+   {
+    "title": "閱讀",
+    "points": []
+   },
+   {
+    "title": "寫作",
+    "points": []
+   }
+  ],
+  "url": "https://www.junyiacademy.org/topics/adljun-c2-01"
+ },
+ "國文|愛蓮說周敦頤": {
+  "subj": "國文",
+  "junyiTitle": "愛蓮說 周敦頤",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c2-01"
+ },
+ "國文|語文常識：語法詞類": {
+  "subj": "國文",
+  "junyiTitle": "語文常識(一)：語法 詞類",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c2-02"
+ },
+ "國文|張釋之執法司馬遷": {
+  "subj": "國文",
+  "junyiTitle": "張釋之執法 司馬遷",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c2-03"
+ },
+ "國文|語文常識：語法句型": {
+  "subj": "國文",
+  "junyiTitle": "語文常識(二)：語法 句型",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c2-04"
+ },
+ "國文|為學一首示子姪彭端淑": {
+  "subj": "國文",
+  "junyiTitle": "為學一首示子姪 彭端淑",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c2-05"
+ },
+ "國文|世說新語選劉義慶": {
+  "subj": "國文",
+  "junyiTitle": "世說新語選 劉義慶",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c2-06"
+ },
+ "國文|空城計羅貫中": {
+  "subj": "國文",
+  "junyiTitle": "空城計 羅貫中",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c2-07"
+ },
+ "國文|定伯賣鬼曹丕": {
+  "subj": "國文",
+  "junyiTitle": "定伯賣鬼 曹丕",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c2-08"
+ },
+ "國文|良馬對岳飛": {
+  "subj": "國文",
+  "junyiTitle": "良馬對 岳飛",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c3-01"
+ },
+ "國文|生於憂患死於安樂孟子": {
+  "subj": "國文",
+  "junyiTitle": "生於憂患死於安樂 孟子",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c3-02"
+ },
+ "國文|湖心亭看雪張岱": {
+  "subj": "國文",
+  "junyiTitle": "湖心亭看雪 張岱",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c3-03"
+ },
+ "國文|寄弟墨書鄭燮": {
+  "subj": "國文",
+  "junyiTitle": "寄弟墨書 鄭燮",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c3-04"
+ },
+ "國文|習慣說劉蓉": {
+  "subj": "國文",
+  "junyiTitle": "習慣說 劉蓉",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c3-05"
+ },
+ "國文|與宋元思書吳均": {
+  "subj": "國文",
+  "junyiTitle": "與宋元思書 吳均",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c3-06"
+ },
+ "國文|會考重點複習": {
+  "subj": "國文",
+  "junyiTitle": "會考重點複習",
+  "sections": [],
+  "url": "https://www.junyiacademy.org/topics/coocjun-c3-07"
+ }
+}

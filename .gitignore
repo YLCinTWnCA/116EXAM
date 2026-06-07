@@ -1,0 +1,4 @@
+# 解析章節用的中間檔,不需要上 GitHub
+pdfs/
+.DS_Store
+exam_pdfs/
