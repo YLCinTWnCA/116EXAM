@@ -638,7 +638,7 @@
         <div class="home-buttons">
           <button class="plan-btn" id="generate-plan-btn">📋 讀書計劃</button>
           <button class="plan-btn secondary" id="version-btn">📚 課本版本</button>
-          <!-- 題目練習(含歷屆考題)已移至私人版,公開版不含商業著作內容 -->
+          <button class="plan-btn secondary" id="quiz-link-btn">📝 題目練習</button>
         </div>
       </div>
 
@@ -4452,6 +4452,15 @@ document.getElementById("quiz-btn")?.addEventListener("click", () => {
 if (currentView === "quiz" && !document.getElementById("quiz-btn")) {
   currentView = "home"; localStorage.setItem("currentView", "home");
 }
+// 公開版「題目練習」導到私人版(含完整考題,需登入)
+const PRIVATE_QUIZ_URL = "";  // ← Cloudflare 部署後填入私人版網址
+document.getElementById("quiz-link-btn")?.addEventListener("click", () => {
+  if (PRIVATE_QUIZ_URL) {
+    window.open(PRIVATE_QUIZ_URL, "_blank");
+  } else {
+    alert("題目練習(含歷屆考題)在私人版,需要登入。\n\n私人版網址設定好後,這顆按鈕就會直接帶你過去。");
+  }
+});
 document.getElementById("quiz-back-btn").addEventListener("click", () => {
   currentView = "home";
   localStorage.setItem("currentView", "home");
