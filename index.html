@@ -3295,6 +3295,20 @@ async function loadChapterSummaries() {
 }
 loadChapterSummaries();
 
+// 原創逐題詳解(key = 科目|年#題號),從真題+官方正解回推,可公開
+let EXPLANATIONS = {};
+async function loadExplanations() {
+  if (window.__EMBED_EXPLANATIONS__) { EXPLANATIONS = window.__EMBED_EXPLANATIONS__; return; }
+  try {
+    const resp = await fetch("explanations_original.json", { cache: "default" });
+    if (resp.ok) {
+      EXPLANATIONS = await resp.json();
+      console.log("原創詳解載入:", Object.keys(EXPLANATIONS).length, "題");
+    }
+  } catch (e) { console.warn("詳解載入失敗:", e.message); }
+}
+loadExplanations();
+
 let vocabKnown = {};
 try { vocabKnown = JSON.parse(localStorage.getItem("vocabKnown") || "{}"); } catch (e) {}
 function saveVocabKnown() { localStorage.setItem("vocabKnown", JSON.stringify(vocabKnown)); }
@@ -3765,7 +3779,16 @@ function renderQuizQuestion() {
     result.innerHTML = (right ? "✓ <b>答對了!</b>" : "✗ <b>答錯了。</b>") +
       " 正解:<b>" + "ABCD"[q.a] + "</b>";
     card.appendChild(result);
-    // 解析:只顯示圖(從詳解 PDF 切片),不顯示文字版
+    // 原創文字詳解(優先顯示,可公開、最可靠)
+    const eoKey = q.s + "|" + q.y + "#" + q.n;
+    const eo = EXPLANATIONS[eoKey];
+    if (eo) {
+      const exp = document.createElement("div");
+      exp.className = "quiz-explain";
+      exp.textContent = "📝 詳解:" + eo;
+      card.appendChild(exp);
+    }
+    // 官方詳解圖(私人版才有;公開版 404 自動隱藏)
     if (q.n && SUBJECT_TO_DIR[q.s]) {
       const eimg = document.createElement("img");
       eimg.className = "quiz-img";
