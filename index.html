@@ -3401,12 +3401,19 @@ function startSession(subject, mode) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+// 子科目(生物/歷史…)→ 題庫科目(自然/社會…),用來正確篩題
+const SUBSUBJ_TO_QS = {
+  "國文": "國文", "英文": "英文", "數學": "數學",
+  "生物": "自然", "理化": "自然", "地科": "自然",
+  "歷史": "社會", "地理": "社會", "公民": "社會"
+};
 // 練習某一章節:用該章重點整理的真題 ids 出題
 function startChapterSession(subject, chapterName) {
   const info = CHAPTER_SUMMARIES[subject] && CHAPTER_SUMMARIES[subject][chapterName];
   const ids = (info && info.ids) || [];
   const idset = new Set(ids);
-  let pool = QUESTIONS.filter(q => idset.has(q.y + "#" + q.n));
+  const qsubj = SUBSUBJ_TO_QS[subject] || subject;  // 章節 ids 不含科目,必須同時比對科目避免跨科撞號
+  let pool = QUESTIONS.filter(q => q.s === qsubj && idset.has(q.y + "#" + q.n));
   if (pool.length === 0) { alert("這章暫時沒有對應的題目可練。"); return; }
   pool = shuffle(pool);
   currentView = "quiz";
