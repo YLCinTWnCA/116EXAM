@@ -196,6 +196,33 @@
   }
   .detail-title { font-size: 22px; font-weight: 700; letter-spacing: 0.2em; }
   .detail-progress { font-size: 12px; opacity: 0.7; }
+  .summary-card {
+    background: rgba(180,140,220,0.1); border: 1px solid rgba(190,150,230,0.3);
+    border-radius: 12px; margin-bottom: 18px; overflow: hidden;
+  }
+  .summary-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 13px 16px; cursor: pointer; font-weight: 700; font-size: 14px;
+    color: #d0b8ec; letter-spacing: 0.05em;
+  }
+  .summary-head:hover { background: rgba(190,150,230,0.08); }
+  .summary-toggle { opacity: 0.7; font-size: 12px; }
+  .summary-body { padding: 0 12px 12px; }
+  .summary-ch { border-top: 1px solid rgba(255,255,255,0.06); }
+  .summary-ch:first-child { border-top: none; }
+  .summary-ch-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 11px 6px; cursor: pointer; gap: 10px;
+  }
+  .summary-ch-head:hover { background: rgba(255,255,255,0.04); }
+  .summary-ch-name { font-size: 14px; font-weight: 600; }
+  .summary-ch.open .summary-ch-name { color: #d8c0f0; }
+  .summary-ch-count { font-size: 11px; opacity: 0.55; flex-shrink: 0; }
+  .summary-ch-body {
+    white-space: pre-wrap; font-size: 13px; line-height: 1.85;
+    padding: 4px 8px 14px; opacity: 0.9;
+  }
+  .hidden { display: none !important; }
   .sub-section { margin-top: 22px; }
   .sub-section:first-child { margin-top: 0; }
   .sub-section-title {
@@ -204,7 +231,6 @@
     border-bottom: 1px solid rgba(255,255,255,0.08);
     letter-spacing: 0.2em;
   }
-  .hidden { display: none !important; }
 
   /* 制定讀書計劃 */
   .plan-btn {
@@ -3138,6 +3164,20 @@ async function loadOutlines() {
   }
 }
 loadOutlines();
+
+// 從歷屆會考真題回推的各章節 3 分鐘重點整理(原創複習筆記)
+let CHAPTER_SUMMARIES = {};
+async function loadChapterSummaries() {
+  try {
+    const resp = await fetch("chapter_summaries.json", { cache: "default" });
+    if (resp.ok) {
+      CHAPTER_SUMMARIES = await resp.json();
+      if (typeof renderStudyPlan === "function" && currentView && DISPLAY_GROUPS[currentView]) renderStudyPlan();
+    }
+  } catch (e) { console.warn("章節重點載入失敗:", e.message); }
+}
+loadChapterSummaries();
+
 // 正規化單元名(對應 scrape.py 的 norm_unit)
 function normUnitName(name) {
   return (name || "")
@@ -3873,6 +3913,52 @@ function renderDetail(group) {
 
   const $content = document.getElementById("detail-content");
   $content.innerHTML = "";
+
+  // 📝 會考重點整理(從歷屆真題回推,按考過題數排序)
+  for (const subj of DISPLAY_GROUPS[group]) {
+    const chMap = CHAPTER_SUMMARIES[subj];
+    if (!chMap || !Object.keys(chMap).length) continue;
+    const sc = document.createElement("div");
+    sc.className = "summary-card";
+    const multi = DISPLAY_GROUPS[group].length > 1;
+    const sh = document.createElement("div");
+    sh.className = "summary-head";
+    const scid = "sumCollapsed:" + subj;
+    const sCol = localStorage.getItem(scid) !== "0";
+    sh.innerHTML = '<span>📝 ' + (multi ? subj + " " : "") + '會考重點整理　<span style="opacity:0.6;font-weight:400;font-size:12px">' +
+      Object.keys(chMap).length + ' 章・從真題回推</span></span><span class="summary-toggle">' + (sCol ? "▸" : "▾") + '</span>';
+    sc.appendChild(sh);
+    const sb = document.createElement("div");
+    sb.className = "summary-body" + (sCol ? " hidden" : "");
+    const chs = Object.entries(chMap).sort((a, b) => (b[1].count || 0) - (a[1].count || 0));
+    for (const [chName, info] of chs) {
+      const row = document.createElement("div");
+      row.className = "summary-ch";
+      const head = document.createElement("div");
+      head.className = "summary-ch-head";
+      head.innerHTML = '<span class="summary-ch-name">' + chName + '</span>' +
+        '<span class="summary-ch-count">考過 ' + (info.count || 0) + ' 題</span>';
+      row.appendChild(head);
+      const detail = document.createElement("div");
+      detail.className = "summary-ch-body hidden";
+      detail.textContent = info.summary;
+      row.appendChild(detail);
+      head.onclick = () => {
+        const open = detail.classList.toggle("hidden");
+        row.classList.toggle("open", !open);
+      };
+      sb.appendChild(row);
+    }
+    sc.appendChild(sb);
+    sh.onclick = () => {
+      const nowC = !sb.classList.contains("hidden");
+      sb.classList.toggle("hidden", nowC);
+      sh.querySelector(".summary-toggle").textContent = nowC ? "▸" : "▾";
+      localStorage.setItem(scid, nowC ? "1" : "0");
+    };
+    $content.appendChild(sc);
+  }
+
   const subjs = DISPLAY_GROUPS[group];
   for (const subj of subjs) {
     const section = document.createElement("div");
