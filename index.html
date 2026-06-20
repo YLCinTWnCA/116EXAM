@@ -3112,16 +3112,35 @@ function hasCustomUnits(subject, version) {
   const c = customUnits[subject] && customUnits[subject][version];
   return Array.isArray(c) && c.length > 0;
 }
+// 我們的重點整理章節(按考過題數排序,高頻在前)
+function summaryUnits(subject) {
+  try {
+    const m = (typeof CHAPTER_SUMMARIES !== "undefined") && CHAPTER_SUMMARIES[subject];
+    if (m && Object.keys(m).length) {
+      return Object.entries(m).sort((a, b) => (b[1].count || 0) - (a[1].count || 0)).map(e => e[0]);
+    }
+  } catch (e) {}
+  return null;
+}
 function getUnits(subject) {
   const v = currentVersion(subject);
+  // 1. 使用者自訂優先
   const custom = getCustomUnits(subject, v);
   if (Array.isArray(custom) && custom.length > 0) return custom;
+  // 2. 複習用「我們的重點整理章節」(從真題回推,按考頻排序)
+  if (!useTextbookVersion) {
+    const su = summaryUnits(subject);
+    if (su) return su;
+  }
+  // 3. 後備:課本版本內容
   if (v !== "通用") {
     const pd = STUDY_PLAN_BY_VERSION[v];
     if (pd && Array.isArray(pd[subject]) && pd[subject].length > 0) return pd[subject];
   }
   return STUDY_PLAN_GENERIC[subject];
 }
+// 切換:預設用我們的重點整理;若使用者想用課本版本可切回
+let useTextbookVersion = localStorage.getItem("useTextbookVersion") === "1";
 let editingSubject = null;
 
 // ---------- 會考題目練習 ----------
@@ -4342,7 +4361,12 @@ function renderDetail(group) {
         row.className = "unit-row";
         const name = document.createElement("div");
         name.className = "unit-name";
-        name.textContent = unit;
+        const csInfo = CHAPTER_SUMMARIES[subj] && CHAPTER_SUMMARIES[subj][unit];
+        if (csInfo && csInfo.count) {
+          name.innerHTML = unit + ' <span style="font-size:11px;opacity:0.5;font-weight:400">考過 ' + csInfo.count + ' 題</span>';
+        } else {
+          name.textContent = unit;
+        }
         name.title = "點一下加 1 次複習";
         name.onclick = () => {
           for (let i = 0; i < REVIEW_COUNT; i++) {
@@ -4418,6 +4442,33 @@ function renderVersionPicker() {
   setView("version");
   const $c = document.getElementById("version-content");
   $c.innerHTML = "";
+
+  // 複習單元來源切換
+  const toggle = document.createElement("div");
+  toggle.style.cssText = "background:rgba(180,140,220,0.12);border:1px solid rgba(190,150,230,0.3);border-radius:10px;padding:14px;margin-bottom:16px";
+  toggle.innerHTML =
+    '<div style="font-weight:700;font-size:14px;color:#d0b8ec;margin-bottom:8px">複習單元用哪一套?</div>';
+  const mk = (on, label, desc) => {
+    const b = document.createElement("button");
+    b.style.cssText = "display:block;width:100%;text-align:left;margin-bottom:6px;padding:10px 12px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;border:1px solid " +
+      (on ? "#be96e6;background:rgba(190,150,230,0.22);color:#fff" : "rgba(255,255,255,0.18);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.8)");
+    b.innerHTML = (on ? "● " : "○ ") + "<b>" + label + "</b><br><span style='font-size:11px;opacity:0.7'>" + desc + "</span>";
+    return b;
+  };
+  const bSum = mk(!useTextbookVersion, "📝 會考重點整理(推薦)", "從歷屆真題回推、按考頻排序的章節,每章附 3 分鐘重點");
+  bSum.onclick = () => { useTextbookVersion = false; localStorage.setItem("useTextbookVersion", "0"); renderStudyPlan(); };
+  const bVer = mk(useTextbookVersion, "📚 課本版本章節", "依康軒/南一/翰林課本目錄,下方可選版本");
+  bVer.onclick = () => { useTextbookVersion = true; localStorage.setItem("useTextbookVersion", "1"); renderStudyPlan(); };
+  toggle.appendChild(bSum); toggle.appendChild(bVer);
+  $c.appendChild(toggle);
+
+  if (!useTextbookVersion) {
+    const note = document.createElement("div");
+    note.style.cssText = "opacity:0.6;font-size:12px;text-align:center;padding:10px";
+    note.textContent = "目前用會考重點整理。下方課本版本選擇在切回「課本版本章節」後才生效。";
+    $c.appendChild(note);
+  }
+
   for (const subj of Object.keys(STUDY_PLAN_GENERIC)) {
     const row = document.createElement("div");
     row.className = "version-row";
