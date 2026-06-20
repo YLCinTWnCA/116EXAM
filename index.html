@@ -196,6 +196,64 @@
   }
   .detail-title { font-size: 22px; font-weight: 700; letter-spacing: 0.2em; }
   .detail-progress { font-size: 12px; opacity: 0.7; }
+  .strategy-card {
+    background: linear-gradient(135deg, rgba(255,200,100,0.12), rgba(255,160,80,0.1));
+    border: 1px solid rgba(255,190,90,0.35); border-radius: 12px;
+    padding: 0; margin-bottom: 18px; overflow: hidden;
+  }
+  .strategy-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 13px 16px; cursor: pointer; font-weight: 700; font-size: 14px;
+    color: #ffd9a0; letter-spacing: 0.08em;
+  }
+  .strategy-head:hover { background: rgba(255,190,90,0.08); }
+  .strategy-toggle { opacity: 0.7; font-size: 12px; }
+  .strategy-body { padding: 0 16px 15px; }
+  .strategy-focus { font-size: 13.5px; line-height: 1.75; opacity: 0.92; margin-bottom: 10px; }
+  .strategy-points { font-size: 13px; line-height: 1.9; white-space: pre-wrap; opacity: 0.85; margin-bottom: 12px; }
+  .strategy-res { font-size: 12.5px; opacity: 0.8; }
+  .strategy-res a { color: #8ad5f0; text-decoration: none; }
+  .strategy-res a:hover { text-decoration: underline; }
+  .curriculum-card {
+    background: rgba(120,180,140,0.1); border: 1px solid rgba(120,200,150,0.3);
+    border-radius: 12px; margin-bottom: 18px; overflow: hidden;
+  }
+  .curriculum-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 13px 16px; cursor: pointer; font-weight: 700; font-size: 14px;
+    color: #b8e6c0; letter-spacing: 0.06em;
+  }
+  .curriculum-head:hover { background: rgba(120,200,150,0.08); }
+  .curriculum-body { padding: 0 14px 14px; }
+  .curr-cat { font-size: 12.5px; font-weight: 700; color: #a0d8b0; margin: 12px 0 5px; opacity: 0.9; }
+  .curr-item {
+    display: flex; align-items: flex-start; gap: 9px; padding: 6px 8px;
+    border-radius: 6px; cursor: pointer; font-size: 13px; line-height: 1.5;
+  }
+  .curr-item:hover { background: rgba(255,255,255,0.05); }
+  .curr-item.done { opacity: 0.5; }
+  .curr-box {
+    flex-shrink: 0; width: 18px; height: 18px; border-radius: 4px;
+    border: 1.5px solid rgba(255,255,255,0.3); display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 800; margin-top: 1px;
+  }
+  .curr-item.done .curr-box { background: #78c896; border-color: #78c896; color: #0f2027; }
+  .curr-text { flex: 1; }
+  .curr-note { font-size: 10.5px; opacity: 0.45; margin-top: 12px; line-height: 1.5; }
+  .vocab-card {
+    background: rgba(140,160,255,0.1); border: 1px solid rgba(150,170,255,0.3);
+    border-radius: 12px; margin-bottom: 18px; padding: 14px 16px;
+  }
+  .vocab-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-weight: 700; font-size: 14px; color: #b8c8ff; margin-bottom: 10px;
+    letter-spacing: 0.06em; flex-wrap: wrap; gap: 6px;
+  }
+  .vocab-progress { font-size: 12px; opacity: 0.8; font-weight: 400; }
+  .vocab-stage { text-align: center; }
+  .vocab-word { font-size: 34px; font-weight: 800; margin: 14px 0 6px; cursor: pointer; }
+  .vocab-zh { font-size: 18px; margin-bottom: 16px; cursor: pointer; min-height: 26px; }
+  .vocab-btns { display: flex; gap: 10px; justify-content: center; margin-bottom: 6px; }
   .summary-card {
     background: rgba(180,140,220,0.1); border: 1px solid rgba(190,150,230,0.3);
     border-radius: 12px; margin-bottom: 18px; overflow: hidden;
@@ -206,7 +264,6 @@
     color: #d0b8ec; letter-spacing: 0.05em;
   }
   .summary-head:hover { background: rgba(190,150,230,0.08); }
-  .summary-toggle { opacity: 0.7; font-size: 12px; }
   .summary-body { padding: 0 12px 12px; }
   .summary-ch { border-top: 1px solid rgba(255,255,255,0.06); }
   .summary-ch:first-child { border-top: none; }
@@ -222,7 +279,6 @@
     white-space: pre-wrap; font-size: 13px; line-height: 1.85;
     padding: 4px 8px 14px; opacity: 0.9;
   }
-  .hidden { display: none !important; }
   .sub-section { margin-top: 22px; }
   .sub-section:first-child { margin-top: 0; }
   .sub-section-title {
@@ -231,6 +287,7 @@
     border-bottom: 1px solid rgba(255,255,255,0.08);
     letter-spacing: 0.2em;
   }
+  .hidden { display: none !important; }
 
   /* 制定讀書計劃 */
   .plan-btn {
@@ -664,7 +721,7 @@
         <div class="home-buttons">
           <button class="plan-btn" id="generate-plan-btn">📋 讀書計劃</button>
           <button class="plan-btn secondary" id="version-btn">📚 課本版本</button>
-          <button class="plan-btn secondary" id="quiz-link-btn">📝 題目練習</button>
+          <button class="plan-btn secondary" id="quiz-btn">📝 題目練習</button>
         </div>
       </div>
 
@@ -3135,6 +3192,14 @@ function cleanOrFallback(s, fallback) {
 }
 
 async function loadQuestions() {
+  // 內嵌資料優先(雙擊 file:// 開時 fetch 會被擋,改用內嵌)
+  if (window.__EMBED_QUESTIONS__ && Array.isArray(window.__EMBED_QUESTIONS__) && window.__EMBED_QUESTIONS__.length) {
+    QUESTIONS = window.__EMBED_QUESTIONS__;
+    console.log("題庫(內嵌):", QUESTIONS.length, "題");
+    const $ct = document.getElementById("quiz-counter");
+    if ($ct) $ct.textContent = "題庫共 " + QUESTIONS.length + " 題";
+    return;
+  }
   try {
     const resp = await fetch("questions.json", { cache: "default" });
     if (!resp.ok) return;
@@ -3154,6 +3219,11 @@ loadQuestions();
 // 均一單元大綱(專業老師整理,非 AI)
 let JUNYI_OUTLINES = {};
 async function loadOutlines() {
+  if (window.__EMBED_OUTLINES__) {
+    JUNYI_OUTLINES = window.__EMBED_OUTLINES__;
+    console.log("均一大綱(內嵌):", Object.keys(JUNYI_OUTLINES).length, "個單元");
+    return;
+  }
   try {
     const resp = await fetch("junyi_outlines.json", { cache: "default" });
     if (!resp.ok) return;
@@ -3165,18 +3235,42 @@ async function loadOutlines() {
 }
 loadOutlines();
 
-// 從歷屆會考真題回推的各章節 3 分鐘重點整理(原創複習筆記)
+// 官方課綱學習內容(國教院,零幻覺)— 目前有自然科
+let CURRICULUM = {};
+async function loadCurriculum() {
+  if (window.__EMBED_CURRICULUM__) { CURRICULUM = window.__EMBED_CURRICULUM__; return; }
+  try {
+    const resp = await fetch("curriculum.json", { cache: "default" });
+    if (resp.ok) CURRICULUM = await resp.json();
+  } catch (e) { console.warn("課綱載入失敗:", e.message); }
+}
+loadCurriculum();
+
+// 教育部 1200 基本字彙(官方字表)
+let VOCAB = [];
+async function loadVocab() {
+  if (window.__EMBED_VOCAB__) { VOCAB = window.__EMBED_VOCAB__; return; }
+  try {
+    const resp = await fetch("vocab.json", { cache: "default" });
+    if (resp.ok) VOCAB = await resp.json();
+  } catch (e) { console.warn("字彙載入失敗:", e.message); }
+}
+loadVocab();
+
+// 從真題回推的各章節 3 分鐘重點整理(grounded 在歷屆會考題)
 let CHAPTER_SUMMARIES = {};
 async function loadChapterSummaries() {
+  if (window.__EMBED_SUMMARIES__) { CHAPTER_SUMMARIES = window.__EMBED_SUMMARIES__; return; }
   try {
     const resp = await fetch("chapter_summaries.json", { cache: "default" });
-    if (resp.ok) {
-      CHAPTER_SUMMARIES = await resp.json();
-      if (typeof renderStudyPlan === "function" && currentView && DISPLAY_GROUPS[currentView]) renderStudyPlan();
-    }
+    if (resp.ok) CHAPTER_SUMMARIES = await resp.json();
   } catch (e) { console.warn("章節重點載入失敗:", e.message); }
 }
 loadChapterSummaries();
+
+let vocabKnown = {};
+try { vocabKnown = JSON.parse(localStorage.getItem("vocabKnown") || "{}"); } catch (e) {}
+function saveVocabKnown() { localStorage.setItem("vocabKnown", JSON.stringify(vocabKnown)); }
 
 // 正規化單元名(對應 scrape.py 的 norm_unit)
 function normUnitName(name) {
@@ -3903,6 +3997,38 @@ function renderHome() {
   }
 }
 
+// 各科複習方向 + 推薦資源(group 名 = 國語/數學/英文/自然/社會)
+const REVIEW_STRATEGY = {
+  "國語": {
+    focus: "著重文言文閱讀、白話文長文理解及國學常識。把常見成語與修辭圖表化整理。",
+    points: ["文言文:虛字、句型、翻譯多練", "白話長文:先看題目再讀文章抓關鍵", "國學常識:文體、作者、年代要熟", "成語/修辭:同義反義成對記、圖表化"],
+    res: [{ n: "柳吟國文團隊", u: "https://www.google.com/search?q=" + encodeURIComponent("柳吟國文團隊 會考") },
+          { n: "甄戰一點通", u: "https://www.reallygood.com.tw/" }]
+  },
+  "英文": {
+    focus: "必考:1200 核心單字片語、時態變化(如現在完成式)、長篇閱讀測驗。",
+    points: ["1200 核心單字每天背、片語成組記", "時態:現在完成式 have+p.p. 最常考", "閱讀:先看題目找關鍵字再回文章", "聽力:每天聽 15 分鐘抓主旨"],
+    res: [{ n: "均一教育平台", u: "https://www.junyiacademy.org/" }]
+  },
+  "數學": {
+    focus: "掌握一元二次方程式、幾何圖形證明、統計機率。歷屆計算題比例高,務必動筆算。",
+    points: ["一元二次:因式分解 + 公式解 + 配方法", "幾何證明:全等/相似/圓的性質", "統計機率:平均中位眾數、機率算法", "計算題佔比高,寫過程不心算"],
+    res: [{ n: "均一教育平台", u: "https://www.junyiacademy.org/" },
+          { n: "AI 學霸", u: "https://www.google.com/search?q=" + encodeURIComponent("AI學霸 數學 會考") }]
+  },
+  "社會": {
+    focus: "歷史重時代脈絡與重要變革;地理重氣候、地形與地圖判讀;公民重法律與經濟概念。",
+    points: ["歷史:用時間軸串事件與變革", "地理:氣候/地形/地圖判讀最常考", "公民:法律(民刑事)、經濟(供需)概念", "三科多結合時事與圖表判讀"],
+    res: [{ n: "康軒國中總複習專區", u: "https://www.knsh.com.tw/" }]
+  },
+  "自然": {
+    focus: "理化重力學、功與能、酸鹼鹽;生物重細胞、遺傳與生態;地科重天體運行、板塊與天氣。",
+    points: ["理化:力學、功與能、酸鹼鹽(pH)", "生物:細胞、遺傳(孟德爾)、生態系", "地科:天體運行、板塊運動、天氣系統", "觀念為主,看圖看表多於死背"],
+    res: [{ n: "超級考試王", u: "https://www.google.com/search?q=" + encodeURIComponent("超級考試王 自然 會考") },
+          { n: "均一教育平台", u: "https://www.junyiacademy.org/" }]
+  }
+};
+
 function renderDetail(group) {
   setView("detail");
 
@@ -3914,7 +4040,175 @@ function renderDetail(group) {
   const $content = document.getElementById("detail-content");
   $content.innerHTML = "";
 
-  // 📝 會考重點整理(從歷屆真題回推,按考過題數排序)
+  // 複習方向卡(可收合,記住狀態)
+  const strat = REVIEW_STRATEGY[group];
+  if (strat) {
+    const card = document.createElement("div");
+    card.className = "strategy-card";
+    const collapsed = localStorage.getItem("strategyCollapsed:" + group) === "1";
+    const head = document.createElement("div");
+    head.className = "strategy-head";
+    head.innerHTML = '<span>🎯 ' + group + ' 複習方向</span><span class="strategy-toggle">' + (collapsed ? "▸" : "▾") + '</span>';
+    card.appendChild(head);
+    const bodyWrap = document.createElement("div");
+    bodyWrap.className = "strategy-body" + (collapsed ? " hidden" : "");
+    const focus = document.createElement("div");
+    focus.className = "strategy-focus";
+    focus.textContent = strat.focus;
+    bodyWrap.appendChild(focus);
+    const ul = document.createElement("div");
+    ul.className = "strategy-points";
+    ul.textContent = strat.points.map(p => "• " + p).join("\n");
+    bodyWrap.appendChild(ul);
+    const res = document.createElement("div");
+    res.className = "strategy-res";
+    res.appendChild(document.createTextNode("推薦資源:"));
+    strat.res.forEach((r, i) => {
+      const a = document.createElement("a");
+      a.href = r.u; a.target = "_blank"; a.textContent = r.n;
+      res.appendChild(a);
+      if (i < strat.res.length - 1) res.appendChild(document.createTextNode("、"));
+    });
+    bodyWrap.appendChild(res);
+    card.appendChild(bodyWrap);
+    head.onclick = () => {
+      const nowCollapsed = !bodyWrap.classList.contains("hidden");
+      bodyWrap.classList.toggle("hidden", nowCollapsed);
+      head.querySelector(".strategy-toggle").textContent = nowCollapsed ? "▸" : "▾";
+      localStorage.setItem("strategyCollapsed:" + group, nowCollapsed ? "1" : "0");
+    };
+    $content.appendChild(card);
+  }
+
+  // 官方學習重點檢核表(目前自然科有)— group "自然" 對應 CURRICULUM["自然"]
+  const curr = CURRICULUM[group];
+  if (curr && curr.length) {
+    const cc = document.createElement("div");
+    cc.className = "curriculum-card";
+    const done = curr.filter(it => localStorage.getItem("currChk:" + it.code) === "1").length;
+    const pct = Math.round(done * 100 / curr.length);
+    const collapsed = localStorage.getItem("currCollapsed:" + group) !== "0";
+    const h = document.createElement("div");
+    h.className = "curriculum-head";
+    h.innerHTML = '<span>📋 ' + group + ' 官方學習重點(課綱)　' + done + '/' + curr.length + '</span>' +
+      '<span class="strategy-toggle">' + (collapsed ? "▸" : "▾") + '</span>';
+    cc.appendChild(h);
+    const bodyWrap = document.createElement("div");
+    bodyWrap.className = "curriculum-body" + (collapsed ? " hidden" : "");
+    // 依主題分組
+    const byCat = {};
+    curr.forEach(it => { (byCat[it.cat] = byCat[it.cat] || []).push(it); });
+    for (const cat of Object.keys(byCat)) {
+      const ch = document.createElement("div");
+      ch.className = "curr-cat";
+      ch.textContent = "▸ " + cat;
+      bodyWrap.appendChild(ch);
+      byCat[cat].forEach(it => {
+        const row = document.createElement("div");
+        const checked = localStorage.getItem("currChk:" + it.code) === "1";
+        row.className = "curr-item" + (checked ? " done" : "");
+        row.innerHTML = '<span class="curr-box">' + (checked ? "✓" : "") + '</span><span class="curr-text">' + it.text + '</span>';
+        row.onclick = () => {
+          const now = localStorage.getItem("currChk:" + it.code) === "1";
+          localStorage.setItem("currChk:" + it.code, now ? "0" : "1");
+          renderStudyPlan();
+        };
+        bodyWrap.appendChild(row);
+      });
+    }
+    const note = document.createElement("div");
+    note.className = "curr-note";
+    note.textContent = "資料來源:十二年國教課綱・國家教育研究院(官方學習內容,會考命題依據)";
+    bodyWrap.appendChild(note);
+    cc.appendChild(bodyWrap);
+    h.onclick = () => {
+      const nowC = !bodyWrap.classList.contains("hidden");
+      bodyWrap.classList.toggle("hidden", nowC);
+      h.querySelector(".strategy-toggle").textContent = nowC ? "▸" : "▾";
+      localStorage.setItem("currCollapsed:" + group, nowC ? "1" : "0");
+    };
+    $content.appendChild(cc);
+  }
+
+  // 英文:教育部 1200 字單字卡練習
+  if (group === "英文" && VOCAB.length) {
+    const knownCount = VOCAB.filter(v => vocabKnown[v.w]).length;
+    const vc = document.createElement("div");
+    vc.className = "vocab-card";
+    vc.innerHTML =
+      '<div class="vocab-head"><span>🔤 教育部 1200 基本字彙</span>' +
+      '<span class="vocab-progress">認得 ' + knownCount + ' / ' + VOCAB.length + '</span></div>';
+    const stage = document.createElement("div");
+    stage.className = "vocab-stage";
+    vc.appendChild(stage);
+    let current = null;
+    function pickWord() {
+      const unknown = VOCAB.filter(v => !vocabKnown[v.w]);
+      const pool = unknown.length ? unknown : VOCAB;
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+    function showCard(flipped) {
+      stage.innerHTML = "";
+      const w = document.createElement("div");
+      w.className = "vocab-word";
+      w.textContent = current.w;
+      stage.appendChild(w);
+      const zh = document.createElement("div");
+      zh.className = "vocab-zh";
+      zh.textContent = flipped ? current.zh : "(點一下看中文)";
+      zh.style.opacity = flipped ? "1" : "0.45";
+      zh.onclick = () => showCard(true);
+      w.onclick = () => showCard(true);
+      stage.appendChild(zh);
+      const btns = document.createElement("div");
+      btns.className = "vocab-btns";
+      const ok = document.createElement("button");
+      ok.className = "quiz-btn primary"; ok.textContent = "✓ 認得";
+      ok.onclick = () => { vocabKnown[current.w] = 1; saveVocabKnown(); renderStudyPlan(); };
+      const no = document.createElement("button");
+      no.className = "quiz-btn"; no.textContent = "✗ 不認得";
+      no.onclick = () => { delete vocabKnown[current.w]; saveVocabKnown(); current = pickWord(); showCard(false); };
+      btns.appendChild(ok); btns.appendChild(no);
+      stage.appendChild(btns);
+    }
+    const startBtn = document.createElement("button");
+    startBtn.className = "quiz-btn primary";
+    startBtn.style.margin = "4px auto 12px";
+    startBtn.style.display = "block";
+    startBtn.textContent = "🎴 抽一個單字";
+    startBtn.onclick = () => { current = pickWord(); startBtn.style.display = "none"; showCard(false); };
+    vc.appendChild(startBtn);
+    $content.appendChild(vc);
+  }
+
+  // 數學:會考官方參考公式表
+  if (group === "數學") {
+    const fc = document.createElement("div");
+    fc.className = "curriculum-card";
+    const fh = document.createElement("div");
+    fh.className = "curriculum-head";
+    const fCollapsed = localStorage.getItem("formulaCollapsed") !== "0";
+    fh.innerHTML = '<span>🧮 會考參考公式表(考卷會附)</span><span class="strategy-toggle">' + (fCollapsed ? "▸" : "▾") + '</span>';
+    fc.appendChild(fh);
+    const fb = document.createElement("div");
+    fb.className = "curriculum-body" + (fCollapsed ? " hidden" : "");
+    const fimg = document.createElement("img");
+    fimg.src = "images/math_formula.jpg";
+    fimg.style.cssText = "max-width:100%;border-radius:8px;background:#fff;cursor:zoom-in;margin-top:8px";
+    fimg.onclick = () => window.open(fimg.src, "_blank");
+    fimg.onerror = () => { fc.style.display = "none"; };
+    fb.appendChild(fimg);
+    fc.appendChild(fb);
+    fh.onclick = () => {
+      const nowC = !fb.classList.contains("hidden");
+      fb.classList.toggle("hidden", nowC);
+      fh.querySelector(".strategy-toggle").textContent = nowC ? "▸" : "▾";
+      localStorage.setItem("formulaCollapsed", nowC ? "1" : "0");
+    };
+    $content.appendChild(fc);
+  }
+
+  // 📝 會考重點整理(從歷屆真題回推,按考過題數排序 = 越常考越前面)
   for (const subj of DISPLAY_GROUPS[group]) {
     const chMap = CHAPTER_SUMMARIES[subj];
     if (!chMap || !Object.keys(chMap).length) continue;
@@ -3926,10 +4220,11 @@ function renderDetail(group) {
     const scid = "sumCollapsed:" + subj;
     const sCol = localStorage.getItem(scid) !== "0";
     sh.innerHTML = '<span>📝 ' + (multi ? subj + " " : "") + '會考重點整理　<span style="opacity:0.6;font-weight:400;font-size:12px">' +
-      Object.keys(chMap).length + ' 章・從真題回推</span></span><span class="summary-toggle">' + (sCol ? "▸" : "▾") + '</span>';
+      Object.keys(chMap).length + ' 章・從真題回推</span></span><span class="strategy-toggle">' + (sCol ? "▸" : "▾") + '</span>';
     sc.appendChild(sh);
     const sb = document.createElement("div");
     sb.className = "summary-body" + (sCol ? " hidden" : "");
+    // 按考題數由多到少排序
     const chs = Object.entries(chMap).sort((a, b) => (b[1].count || 0) - (a[1].count || 0));
     for (const [chName, info] of chs) {
       const row = document.createElement("div");
@@ -3953,7 +4248,7 @@ function renderDetail(group) {
     sh.onclick = () => {
       const nowC = !sb.classList.contains("hidden");
       sb.classList.toggle("hidden", nowC);
-      sh.querySelector(".summary-toggle").textContent = nowC ? "▸" : "▾";
+      sh.querySelector(".strategy-toggle").textContent = nowC ? "▸" : "▾";
       localStorage.setItem(scid, nowC ? "1" : "0");
     };
     $content.appendChild(sc);
@@ -4528,24 +4823,11 @@ document.getElementById("version-btn").addEventListener("click", () => {
   renderStudyPlan();
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
-document.getElementById("quiz-btn")?.addEventListener("click", () => {
+document.getElementById("quiz-btn").addEventListener("click", () => {
   currentView = "quiz";
   localStorage.setItem("currentView", "quiz");
   renderStudyPlan();
   window.scrollTo({ top: 0, behavior: "smooth" });
-});
-// 公開版無題庫:若 localStorage 殘留 quiz view,導回首頁
-if (currentView === "quiz" && !document.getElementById("quiz-btn")) {
-  currentView = "home"; localStorage.setItem("currentView", "home");
-}
-// 公開版「題目練習」導到私人版(含完整考題,需登入)
-const PRIVATE_QUIZ_URL = "";  // ← Cloudflare 部署後填入私人版網址
-document.getElementById("quiz-link-btn")?.addEventListener("click", () => {
-  if (PRIVATE_QUIZ_URL) {
-    window.open(PRIVATE_QUIZ_URL, "_blank");
-  } else {
-    alert("題目練習(含歷屆考題)在私人版,需要登入。\n\n私人版網址設定好後,這顆按鈕就會直接帶你過去。");
-  }
 });
 document.getElementById("quiz-back-btn").addEventListener("click", () => {
   currentView = "home";
