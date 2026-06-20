@@ -4497,6 +4497,32 @@ function toggleUnitSummary(subj, unitName, rowEl) {
   box.className = "unit-summary";
   rowEl.parentNode.insertBefore(box, rowEl.nextSibling);
 
+  // 優先:從真題回推的 3 分鐘重點整理(最豐富)
+  const cs = CHAPTER_SUMMARIES[subj] && CHAPTER_SUMMARIES[subj][unitName];
+  if (cs && cs.summary) {
+    const title = document.createElement("div");
+    title.className = "unit-summary-title";
+    title.textContent = "📝 " + unitName + " 會考重點(考過 " + (cs.count || 0) + " 題・3 分鐘)";
+    box.appendChild(title);
+    const body = document.createElement("div");
+    body.className = "unit-summary-body";
+    body.style.whiteSpace = "pre-wrap";
+    body.textContent = cs.summary;
+    box.appendChild(body);
+    const foot = document.createElement("div");
+    foot.className = "unit-summary-foot";
+    const jy = document.createElement("a");
+    jy.href = junyiUrl(unitName, subj); jy.target = "_blank";
+    jy.textContent = "📺 看均一影片";
+    foot.appendChild(jy);
+    const src = document.createElement("span");
+    src.style.cssText = "font-size:11px;opacity:0.5;margin-left:auto";
+    src.textContent = "重點:歷屆真題回推整理";
+    foot.appendChild(src);
+    box.appendChild(foot);
+    return;
+  }
+
   const outline = lookupOutline(subj, unitName);
   if (!outline) {
     // 均一沒這單元(例如社會科)→ 給連結讓使用者自己查
