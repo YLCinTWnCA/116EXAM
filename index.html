@@ -3309,6 +3309,17 @@ async function loadExplanations() {
 }
 loadExplanations();
 
+// 閱讀題組的文章圖(科目|年#題號 → 文章圖路徑)
+let PASSAGE_MAP = {};
+async function loadPassageMap() {
+  if (window.__EMBED_PASSAGES__) { PASSAGE_MAP = window.__EMBED_PASSAGES__; return; }
+  try {
+    const resp = await fetch("passage_map.json", { cache: "default" });
+    if (resp.ok) PASSAGE_MAP = await resp.json();
+  } catch (e) { console.warn("文章圖對照載入失敗:", e.message); }
+}
+loadPassageMap();
+
 let vocabKnown = {};
 try { vocabKnown = JSON.parse(localStorage.getItem("vocabKnown") || "{}"); } catch (e) {}
 function saveVocabKnown() { localStorage.setItem("vocabKnown", JSON.stringify(vocabKnown)); }
@@ -3736,6 +3747,22 @@ function renderQuizQuestion() {
   meta.className = "quiz-meta";
   meta.textContent = q.y + " 學年度 · " + q.s + " · 第 " + q.n + " 題  (本回合第 " + (s.idx + 1) + " / " + s.questions.length + " 題)";
   card.appendChild(meta);
+  // 閱讀題組:先顯示共用文章圖
+  const passageSrc = PASSAGE_MAP[q.s + "|" + q.y + "#" + q.n];
+  if (passageSrc) {
+    const pimg = document.createElement("img");
+    pimg.className = "quiz-img";
+    pimg.src = passageSrc;
+    pimg.alt = "閱讀文章";
+    pimg.style.borderLeft = "3px solid #6dd5ed";
+    pimg.onclick = () => window.open(pimg.src, "_blank");
+    pimg.onerror = () => { pimg.style.display = "none"; phint.style.display = "none"; };
+    const phint = document.createElement("div");
+    phint.className = "quiz-img-hint";
+    phint.textContent = "📖 閱讀文章(點圖放大)— 下方為本題";
+    card.appendChild(pimg);
+    card.appendChild(phint);
+  }
   // 顯示該題切片圖(從 PDF 按題號 Y 座標精準裁切)
   if (q.n && SUBJECT_TO_DIR[q.s]) {
     const img = document.createElement("img");
