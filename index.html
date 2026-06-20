@@ -279,6 +279,14 @@
     white-space: pre-wrap; font-size: 13px; line-height: 1.85;
     padding: 4px 8px 14px; opacity: 0.9;
   }
+  .summary-ch-practice { padding: 0 8px 14px; }
+  .practice-btn {
+    background: linear-gradient(135deg, #6dd5ed 0%, #4a90c2 100%);
+    border: none; color: #0f2027; font-weight: 700; font-family: inherit;
+    font-size: 13px; padding: 9px 16px; border-radius: 8px; cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .practice-btn:hover { transform: translateY(-1px); }
   .sub-section { margin-top: 22px; }
   .sub-section:first-child { margin-top: 0; }
   .sub-section-title {
@@ -3393,6 +3401,22 @@ function startSession(subject, mode) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+// 練習某一章節:用該章重點整理的真題 ids 出題
+function startChapterSession(subject, chapterName) {
+  const info = CHAPTER_SUMMARIES[subject] && CHAPTER_SUMMARIES[subject][chapterName];
+  const ids = (info && info.ids) || [];
+  const idset = new Set(ids);
+  let pool = QUESTIONS.filter(q => idset.has(q.y + "#" + q.n));
+  if (pool.length === 0) { alert("這章暫時沒有對應的題目可練。"); return; }
+  pool = shuffle(pool);
+  currentView = "quiz";
+  localStorage.setItem("currentView", "quiz");
+  quizSession = { subject, mode: "chapter", chapterName, questions: pool, idx: 0, results: [] };
+  quizState = { picked: null, revealed: false, aiText: null, aiLoading: false, aiError: null };
+  renderQuiz();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 function advanceSession() {
   if (!quizSession) return;
   const q = quizSession.questions[quizSession.idx];
@@ -3681,7 +3705,7 @@ function renderQuizQuestion() {
   const s = quizSession;
   const q = s.questions[s.idx];
   document.getElementById("quiz-counter").textContent =
-    s.subject + " · " + (s.mode === "wrong" ? "錯題" : "新出") +
+    s.subject + " · " + (s.mode === "chapter" ? s.chapterName : s.mode === "wrong" ? "錯題" : "新出") +
     " · " + (s.idx + 1) + "/" + s.questions.length;
   const $c = document.getElementById("quiz-content");
   $c.innerHTML = "";
@@ -4257,8 +4281,17 @@ function renderDetail(group) {
       detail.className = "summary-ch-body hidden";
       detail.textContent = info.summary;
       row.appendChild(detail);
+      const practiceWrap = document.createElement("div");
+      practiceWrap.className = "summary-ch-practice hidden";
+      const pb = document.createElement("button");
+      pb.className = "practice-btn";
+      pb.textContent = "✍️ 練習這章 " + (info.count || 0) + " 題,確認真的懂了";
+      pb.onclick = (e) => { e.stopPropagation(); startChapterSession(subj, chName); };
+      practiceWrap.appendChild(pb);
+      row.appendChild(practiceWrap);
       head.onclick = () => {
         const open = detail.classList.toggle("hidden");
+        practiceWrap.classList.toggle("hidden", open);
         row.classList.toggle("open", !open);
       };
       sb.appendChild(row);
@@ -4562,14 +4595,15 @@ function toggleUnitSummary(subj, unitName, rowEl) {
     box.appendChild(body);
     const foot = document.createElement("div");
     foot.className = "unit-summary-foot";
+    const practice = document.createElement("button");
+    practice.className = "practice-btn";
+    practice.textContent = "✍️ 練習這章 " + (cs.count || 0) + " 題";
+    practice.onclick = () => startChapterSession(subj, unitName);
+    foot.appendChild(practice);
     const jy = document.createElement("a");
     jy.href = junyiUrl(unitName, subj); jy.target = "_blank";
-    jy.textContent = "📺 看均一影片";
+    jy.textContent = "📺 均一影片";
     foot.appendChild(jy);
-    const src = document.createElement("span");
-    src.style.cssText = "font-size:11px;opacity:0.5;margin-left:auto";
-    src.textContent = "重點:歷屆真題回推整理";
-    foot.appendChild(src);
     box.appendChild(foot);
     return;
   }
