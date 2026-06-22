@@ -3433,17 +3433,43 @@ const SUBSUBJ_TO_QS = {
   "歷史": "社會", "地理": "社會", "公民": "社會"
 };
 // 練習某一章節:用該章重點整理的真題 ids 出題
-function startChapterSession(subject, chapterName) {
+// 章節精熟追蹤:記哪些題已答對(答對就不再出),整章做對才重置
+let chapterMastery = {};
+try { chapterMastery = JSON.parse(localStorage.getItem("chapterMastery") || "{}"); } catch (e) {}
+function saveChapterMastery() { localStorage.setItem("chapterMastery", JSON.stringify(chapterMastery)); }
+function masteredSet(chKey) { return new Set(chapterMastery[chKey] || []); }
+function markMastered(chKey, qkey) {
+  if (!chapterMastery[chKey]) chapterMastery[chKey] = [];
+  if (!chapterMastery[chKey].includes(qkey)) { chapterMastery[chKey].push(qkey); saveChapterMastery(); }
+}
+function chapterPool(subject, chapterName) {
   const info = CHAPTER_SUMMARIES[subject] && CHAPTER_SUMMARIES[subject][chapterName];
-  const ids = (info && info.ids) || [];
-  const idset = new Set(ids);
-  const qsubj = SUBSUBJ_TO_QS[subject] || subject;  // 章節 ids 不含科目,必須同時比對科目避免跨科撞號
-  let pool = QUESTIONS.filter(q => q.s === qsubj && idset.has(q.y + "#" + q.n));
-  if (pool.length === 0) { alert("這章暫時沒有對應的題目可練。"); return; }
-  pool = shuffle(pool);
+  const idset = new Set((info && info.ids) || []);
+  const qsubj = SUBSUBJ_TO_QS[subject] || subject;
+  return QUESTIONS.filter(q => q.s === qsubj && idset.has(q.y + "#" + q.n));
+}
+
+function startChapterSession(subject, chapterName) {
+  const all = chapterPool(subject, chapterName);
+  if (all.length === 0) { alert("這章暫時沒有對應的題目可練。"); return; }
+  const chKey = subject + "|" + chapterName;
+  let mastered = masteredSet(chKey);
+  let pool = all.filter(q => !mastered.has(q.y + "#" + q.n));
+  // 全部做對 → 重置,重新一輪
+  if (pool.length === 0) {
+    chapterMastery[chKey] = []; saveChapterMastery();
+    mastered = new Set();
+    pool = all.slice();
+    alert("🎉 這章「" + chapterName + "」全部做對了!幫你重新開始一輪複習。");
+  }
+  const picked = shuffle(pool).slice(0, 5);  // 每次隨機出 5 題
   currentView = "quiz";
   localStorage.setItem("currentView", "quiz");
-  quizSession = { subject, mode: "chapter", chapterName, questions: pool, idx: 0, results: [] };
+  quizSession = {
+    subject, mode: "chapter", chapterName, chKey,
+    totalInChapter: all.length, masteredCount: mastered.size,
+    questions: picked, idx: 0, results: []
+  };
   quizState = { picked: null, revealed: false, aiText: null, aiLoading: false, aiError: null };
   renderQuiz();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -3457,6 +3483,10 @@ function advanceSession() {
   recordSeen(q.s, q.y, q.n, correct);
   if (correct) removeFromWrong(q.s, q.y, q.n);
   else recordWrong(q.s, q.y, q.n);
+  // 章節精熟:答對標記精熟(下次不再出),答錯維持未精熟
+  if (quizSession.mode === "chapter" && correct) {
+    markMastered(quizSession.chKey, q.y + "#" + q.n);
+  }
   quizSession.idx++;
   quizState = { picked: null, revealed: false, aiText: null, aiLoading: false, aiError: null };
   renderQuiz();
@@ -3738,7 +3768,8 @@ function renderQuizQuestion() {
   const q = s.questions[s.idx];
   document.getElementById("quiz-counter").textContent =
     s.subject + " · " + (s.mode === "chapter" ? s.chapterName : s.mode === "wrong" ? "錯題" : "新出") +
-    " · " + (s.idx + 1) + "/" + s.questions.length;
+    " · " + (s.idx + 1) + "/" + s.questions.length +
+    (s.mode === "chapter" ? "(整章精熟 " + masteredSet(s.chKey).size + "/" + s.totalInChapter + ")" : "");
   const $c = document.getElementById("quiz-content");
   $c.innerHTML = "";
   const card = document.createElement("div");
@@ -3935,6 +3966,22 @@ function renderQuizSummary() {
   pctDiv.textContent = pct + "% " + (pct >= 80 ? "🎉" : pct >= 60 ? "👍" : pct >= 40 ? "💪" : "📚 繼續加油");
   card.appendChild(pctDiv);
 
+  // 章節模式:顯示整章精熟進度
+  let chRemain = 0;
+  if (s.mode === "chapter") {
+    const done = masteredSet(s.chKey).size;
+    chRemain = s.totalInChapter - done;
+    const prog = document.createElement("div");
+    prog.style.cssText = "margin-bottom:16px;font-size:14px";
+    prog.innerHTML = "📊 「" + s.chapterName + "」精熟進度:<b>" + done + " / " + s.totalInChapter + "</b> 題" +
+      (chRemain === 0 ? "<br><span style='color:#aee05a'>🎉 整章全部做對!</span>" : "<br><span style='opacity:0.7'>還剩 " + chRemain + " 題沒做對</span>");
+    const bar = document.createElement("div");
+    bar.style.cssText = "height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;margin-top:8px";
+    bar.innerHTML = "<div style='height:100%;background:linear-gradient(90deg,#6dd5ed,#4a90c2);width:" + Math.round(done*100/s.totalInChapter) + "%'></div>";
+    prog.appendChild(bar);
+    card.appendChild(prog);
+  }
+
   // 列出每題對錯小縮圖(可點開放大看詳解)
   const list = document.createElement("div");
   list.style.display = "grid";
@@ -3961,33 +4008,42 @@ function renderQuizSummary() {
   card.appendChild(list);
 
   // 操作按鈕
-  const wn = getWrongCount(s.subject);
   const actions = document.createElement("div");
   actions.className = "quiz-actions";
-  const newBtn = document.createElement("button");
-  newBtn.className = "quiz-btn primary";
-  newBtn.textContent = "🎲 新出 10 題";
-  newBtn.onclick = () => startSession(s.subject, "new");
-  actions.appendChild(newBtn);
-  const wrongBtn = document.createElement("button");
-  wrongBtn.className = "quiz-btn";
-  wrongBtn.style.background = "rgba(255,180,80,0.18)";
-  wrongBtn.style.borderColor = "rgba(255,180,80,0.45)";
-  wrongBtn.style.color = "#ffd9a8";
-  wrongBtn.textContent = "⚠ 錯題 10 題 (" + wn + ")";
-  if (wn === 0) {
-    wrongBtn.disabled = true;
-    wrongBtn.style.opacity = "0.4";
-    wrongBtn.style.cursor = "default";
+  if (s.mode === "chapter") {
+    // 章節精熟模式:繼續練未做對的(全對則重來一輪)
+    const contBtn = document.createElement("button");
+    contBtn.className = "quiz-btn primary";
+    contBtn.textContent = chRemain > 0 ? "✍️ 再練 5 題(剩 " + chRemain + " 題)" : "🔄 全做對了,再複習一輪";
+    contBtn.onclick = () => startChapterSession(s.subject, s.chapterName);
+    actions.appendChild(contBtn);
+    const backBtn = document.createElement("button");
+    backBtn.className = "quiz-btn";
+    backBtn.textContent = "← 回讀書計劃";
+    backBtn.onclick = () => { currentView = "plan"; localStorage.setItem("currentView", "plan"); quizSession = null; renderStudyPlan(); window.scrollTo({top:0}); };
+    actions.appendChild(backBtn);
   } else {
-    wrongBtn.onclick = () => startSession(s.subject, "wrong");
+    const wn = getWrongCount(s.subject);
+    const newBtn = document.createElement("button");
+    newBtn.className = "quiz-btn primary";
+    newBtn.textContent = "🎲 新出 10 題";
+    newBtn.onclick = () => startSession(s.subject, "new");
+    actions.appendChild(newBtn);
+    const wrongBtn = document.createElement("button");
+    wrongBtn.className = "quiz-btn";
+    wrongBtn.style.background = "rgba(255,180,80,0.18)";
+    wrongBtn.style.borderColor = "rgba(255,180,80,0.45)";
+    wrongBtn.style.color = "#ffd9a8";
+    wrongBtn.textContent = "⚠ 錯題 10 題 (" + wn + ")";
+    if (wn === 0) { wrongBtn.disabled = true; wrongBtn.style.opacity = "0.4"; wrongBtn.style.cursor = "default"; }
+    else { wrongBtn.onclick = () => startSession(s.subject, "wrong"); }
+    actions.appendChild(wrongBtn);
+    const backBtn = document.createElement("button");
+    backBtn.className = "quiz-btn";
+    backBtn.textContent = "← 換科目";
+    backBtn.onclick = exitSession;
+    actions.appendChild(backBtn);
   }
-  actions.appendChild(wrongBtn);
-  const backBtn = document.createElement("button");
-  backBtn.className = "quiz-btn";
-  backBtn.textContent = "← 換科目";
-  backBtn.onclick = exitSession;
-  actions.appendChild(backBtn);
   card.appendChild(actions);
   $c.appendChild(card);
 }
