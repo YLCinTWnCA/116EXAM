@@ -4108,13 +4108,12 @@ const REVIEW_STRATEGY = {
   "英文": {
     focus: "必考:1200 核心單字片語、時態變化(如現在完成式)、長篇閱讀測驗。",
     points: ["1200 核心單字每天背、片語成組記", "時態:現在完成式 have+p.p. 最常考", "閱讀:先看題目找關鍵字再回文章", "聽力:每天聽 15 分鐘抓主旨"],
-    res: [{ n: "均一教育平台", u: "https://www.junyiacademy.org/" }]
+    res: []
   },
   "數學": {
     focus: "掌握一元二次方程式、幾何圖形證明、統計機率。歷屆計算題比例高,務必動筆算。",
     points: ["一元二次:因式分解 + 公式解 + 配方法", "幾何證明:全等/相似/圓的性質", "統計機率:平均中位眾數、機率算法", "計算題佔比高,寫過程不心算"],
-    res: [{ n: "均一教育平台", u: "https://www.junyiacademy.org/" },
-          { n: "AI 學霸", u: "https://www.google.com/search?q=" + encodeURIComponent("AI學霸 數學 會考") }]
+    res: [{ n: "AI 學霸", u: "https://www.google.com/search?q=" + encodeURIComponent("AI學霸 數學 會考") }]
   },
   "社會": {
     focus: "歷史重時代脈絡與重要變革;地理重氣候、地形與地圖判讀;公民重法律與經濟概念。",
@@ -4124,8 +4123,7 @@ const REVIEW_STRATEGY = {
   "自然": {
     focus: "理化重力學、功與能、酸鹼鹽;生物重細胞、遺傳與生態;地科重天體運行、板塊與天氣。",
     points: ["理化:力學、功與能、酸鹼鹽(pH)", "生物:細胞、遺傳(孟德爾)、生態系", "地科:天體運行、板塊運動、天氣系統", "觀念為主,看圖看表多於死背"],
-    res: [{ n: "超級考試王", u: "https://www.google.com/search?q=" + encodeURIComponent("超級考試王 自然 會考") },
-          { n: "均一教育平台", u: "https://www.junyiacademy.org/" }]
+    res: [{ n: "超級考試王", u: "https://www.google.com/search?q=" + encodeURIComponent("超級考試王 自然 會考") }]
   }
 };
 
@@ -4160,16 +4158,18 @@ function renderDetail(group) {
     ul.className = "strategy-points";
     ul.textContent = strat.points.map(p => "• " + p).join("\n");
     bodyWrap.appendChild(ul);
-    const res = document.createElement("div");
-    res.className = "strategy-res";
-    res.appendChild(document.createTextNode("推薦資源:"));
-    strat.res.forEach((r, i) => {
-      const a = document.createElement("a");
-      a.href = r.u; a.target = "_blank"; a.textContent = r.n;
-      res.appendChild(a);
-      if (i < strat.res.length - 1) res.appendChild(document.createTextNode("、"));
-    });
-    bodyWrap.appendChild(res);
+    if (strat.res && strat.res.length) {
+      const res = document.createElement("div");
+      res.className = "strategy-res";
+      res.appendChild(document.createTextNode("推薦資源:"));
+      strat.res.forEach((r, i) => {
+        const a = document.createElement("a");
+        a.href = r.u; a.target = "_blank"; a.textContent = r.n;
+        res.appendChild(a);
+        if (i < strat.res.length - 1) res.appendChild(document.createTextNode("、"));
+      });
+      bodyWrap.appendChild(res);
+    }
     card.appendChild(bodyWrap);
     head.onclick = () => {
       const nowCollapsed = !bodyWrap.classList.contains("hidden");
@@ -4468,30 +4468,6 @@ function renderDetail(group) {
           }
         };
         row.appendChild(name);
-        // 📺 均一搜尋按鈕(分冊標籤行就不顯示)
-        if (!/^【.*】$/.test(unit.trim())) {
-          const jy = document.createElement("button");
-          jy.className = "junyi-btn";
-          jy.textContent = "📺 均一";
-          jy.title = "到均一教育平台看這個單元的教學影片";
-          jy.onclick = (e) => {
-            e.stopPropagation();
-            // 清掉【七上】前綴、章節編號(1-1 / 第一章)、括號註解,只留核心關鍵字
-            let kw = unit
-              .replace(/^【[^】]*】\s*/, "")
-              .replace(/^第[一二三四五六七八九十0-9]+[章課節單元]\s*/, "")
-              .replace(/^\d+[-.]\d+\s*/, "")
-              .replace(/[(（].*?[)）]/g, "")
-              .replace(/語文常識[（(]?[一二三四五六七八九十]*[)）]?\s*/, "")
-              .replace(/自學課[一二三四五六七八九十]+\s*/, "")
-              .trim();
-            // 均一無公開搜尋頁,改用 Google 站內搜尋導到均一教學影片
-            const q = "site:junyiacademy.org " + (kw || unit) + " " + subj;
-            const url = "https://www.google.com/search?q=" + encodeURIComponent(q);
-            window.open(url, "_blank");
-          };
-          row.appendChild(jy);
-        }
         const checks = document.createElement("div");
         checks.className = "unit-checks";
         const removeOne = () => {
@@ -4638,7 +4614,7 @@ function toggleUnitSummary(subj, unitName, rowEl) {
   box.className = "unit-summary";
   rowEl.parentNode.insertBefore(box, rowEl.nextSibling);
 
-  // 優先:從真題回推的 3 分鐘重點整理(最豐富)
+  // 只用我們的會考重點整理(從真題回推)
   const cs = CHAPTER_SUMMARIES[subj] && CHAPTER_SUMMARIES[subj][unitName];
   if (cs && cs.summary) {
     const title = document.createElement("div");
@@ -4657,69 +4633,13 @@ function toggleUnitSummary(subj, unitName, rowEl) {
     practice.textContent = "✍️ 練習這章 " + (cs.count || 0) + " 題";
     practice.onclick = () => startChapterSession(subj, unitName);
     foot.appendChild(practice);
-    const jy = document.createElement("a");
-    jy.href = junyiUrl(unitName, subj); jy.target = "_blank";
-    jy.textContent = "📺 均一影片";
-    foot.appendChild(jy);
     box.appendChild(foot);
     return;
   }
-
-  const outline = lookupOutline(subj, unitName);
-  if (!outline) {
-    // 均一沒這單元(例如社會科)→ 給連結讓使用者自己查
-    box.innerHTML =
-      '<div class="unit-summary-title">📖 ' + subj + " · " + unitName + '</div>' +
-      '<div class="unit-summary-body" style="opacity:0.8">均一暫無此單元的整理大綱。可點下方連結到均一/Google 找教學影片。</div>';
-    const foot = document.createElement("div");
-    foot.className = "unit-summary-foot";
-    const jy = document.createElement("a");
-    jy.href = junyiUrl(unitName, subj); jy.target = "_blank";
-    jy.textContent = "🔍 到均一搜尋";
-    foot.appendChild(jy);
-    box.appendChild(foot);
-    return;
-  }
-
-  const title = document.createElement("div");
-  title.className = "unit-summary-title";
-  title.textContent = "📖 " + outline.junyiTitle + " — 複習大綱";
-  box.appendChild(title);
-
-  const body = document.createElement("div");
-  body.className = "unit-summary-body";
-  for (const sec of outline.sections) {
-    const secDiv = document.createElement("div");
-    secDiv.style.marginBottom = "8px";
-    const h = document.createElement("div");
-    h.style.fontWeight = "600";
-    h.style.color = "#aee0f5";
-    h.textContent = "▸ " + sec.title;
-    secDiv.appendChild(h);
-    if (sec.points && sec.points.length) {
-      const ul = document.createElement("div");
-      ul.style.paddingLeft = "14px";
-      ul.style.opacity = "0.9";
-      ul.style.fontSize = "13px";
-      ul.textContent = sec.points.map(p => p.replace(/^【[^】]*】\s*/, "• ")).join("\n");
-      ul.style.whiteSpace = "pre-wrap";
-      secDiv.appendChild(ul);
-    }
-    body.appendChild(secDiv);
-  }
-  box.appendChild(body);
-
-  const foot = document.createElement("div");
-  foot.className = "unit-summary-foot";
-  const jy = document.createElement("a");
-  jy.href = outline.url; jy.target = "_blank";
-  jy.textContent = "📺 到均一看這章的教學影片";
-  foot.appendChild(jy);
-  const src = document.createElement("span");
-  src.style.cssText = "font-size:11px;opacity:0.5;margin-left:auto";
-  src.textContent = "資料來源:均一教育平台";
-  foot.appendChild(src);
-  box.appendChild(foot);
+  // 沒對到重點(少數國文課文等)
+  box.innerHTML =
+    '<div class="unit-summary-title">📖 ' + subj + " · " + unitName + '</div>' +
+    '<div class="unit-summary-body" style="opacity:0.7">本單元暫無會考重點整理。可在「題目練習」直接練該科真題。</div>';
 }
 
 // 建一張「今日進度卡」,含可勾選 + 均一複習連結。回傳 DOM 或 null
@@ -4779,15 +4699,16 @@ function buildTodayCard() {
       renderStudyPlan();
     };
     r.appendChild(chk);
-    // 單元名(點它去均一複習)
     const label = document.createElement("div");
     label.className = "today-unit-label";
     label.innerHTML = u.subj + " · " + u.name +
       (sp.passes > 1 ? ' <span style="opacity:0.6">(第 ' + u.pass + ' 輪)</span>' : "");
     r.appendChild(label);
-    // 📖 重點(AI 生成精簡重點,inline 展開)
+    // 📖 重點(展開該章會考重點整理)
     const rev = document.createElement("button");
-    rev.className = "junyi-btn";
+    rev.className = "practice-btn";
+    rev.style.fontSize = "12px";
+    rev.style.padding = "5px 10px";
     rev.style.marginRight = "0";
     rev.textContent = "📖 重點";
     rev.title = "看這個單元的會考必背重點";
