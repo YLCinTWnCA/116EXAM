@@ -376,6 +376,17 @@
   .plan-unit.missing:hover { background: rgba(255,180,80,0.32) !important; }
   .plan-unit.missing::after { content: " ＋補"; font-size: 10px; opacity: 0.7; }
   .plan-unit.done { opacity: 0.55; }
+  .makeup-panel {
+    background: rgba(255,180,80,0.08); border: 1px solid rgba(255,180,80,0.25);
+    border-radius: 8px; padding: 8px 10px; margin: -2px 0 8px;
+  }
+  .makeup-row {
+    display: flex; align-items: center; gap: 10px; padding: 7px 4px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .makeup-row:first-child { border-top: none; }
+  .makeup-row.done { opacity: 0.55; }
+  .makeup-label { flex: 1; font-size: 13px; }
   .regen-btn {
     display: inline-block;
     margin-top: 10px;
@@ -4917,11 +4928,13 @@ function renderPlan() {
       cls += status.complete ? " past complete" : " past incomplete";
     }
     row.className = cls;
+    const isPastIncomplete = status && !status.complete;
     const date = document.createElement("div");
     date.className = "plan-day-date";
     const offset = dayIdx - todayIdx;
     let dateText = formatPlanDay(offset);
     if (status) dateText += status.complete ? "  ✓ 完成" : "  ⏳ 待補";
+    if (isPastIncomplete) { dateText += "  ▸"; date.style.cursor = "pointer"; }
     date.textContent = dateText;
     row.appendChild(date);
     const units = document.createElement("div");
@@ -4932,7 +4945,6 @@ function renderPlan() {
       const isMissing = status && unitCheckCount(u.subj, u.ui) < u.pass;
       if (status) tag.classList.add(isMissing ? "missing" : "done");
       tag.textContent = u.subj + "·" + u.name + (sp.passes > 1 ? " ⓡ" + u.pass : "");
-      // 過去日沒做的 → 點一下補上(補到該輪 pass 數)
       if (isMissing) {
         tag.title = "點一下補上這個單元";
         tag.onclick = () => {
@@ -4946,6 +4958,50 @@ function renderPlan() {
     }
     row.appendChild(units);
     $content.appendChild(row);
+
+    // 過去未完成日:點日期 → 展開複習窗格(該日單元 + 重點 + 補上)
+    if (isPastIncomplete) {
+      const panel = document.createElement("div");
+      panel.className = "makeup-panel hidden";
+      dayUnits.forEach(u => {
+        const done = unitCheckCount(u.subj, u.ui) >= u.pass;
+        const r = document.createElement("div");
+        r.className = "makeup-row";
+        const chk = document.createElement("div");
+        chk.className = "today-check";
+        chk.textContent = done ? "✓" : "";
+        chk.title = done ? "已補上" : "點一下補上";
+        chk.onclick = (e) => {
+          e.stopPropagation();
+          if (unitCheckCount(u.subj, u.ui) < u.pass) {
+            for (let i = 0; i < REVIEW_COUNT && unitCheckCount(u.subj, u.ui) < u.pass; i++) {
+              if (!getCheck(u.subj, u.ui, i)) setCheck(u.subj, u.ui, i, true);
+            }
+          } else {
+            for (let i = REVIEW_COUNT - 1; i >= 0; i--) { if (getCheck(u.subj, u.ui, i)) { setCheck(u.subj, u.ui, i, false); break; } }
+          }
+          renderStudyPlan();
+        };
+        if (done) r.classList.add("done");
+        r.appendChild(chk);
+        const label = document.createElement("div");
+        label.className = "makeup-label";
+        label.textContent = u.subj + " · " + u.name;
+        r.appendChild(label);
+        const rev = document.createElement("button");
+        rev.className = "practice-btn";
+        rev.style.cssText = "font-size:12px;padding:5px 10px";
+        rev.textContent = "📖 重點";
+        rev.onclick = (e) => { e.stopPropagation(); toggleUnitSummary(u.subj, u.name, r); };
+        r.appendChild(rev);
+        panel.appendChild(r);
+      });
+      $content.appendChild(panel);
+      date.onclick = () => {
+        const nowHidden = panel.classList.toggle("hidden");
+        date.textContent = date.textContent.replace(/[▸▾]$/, nowHidden ? "▸" : "▾");
+      };
+    }
   });
   const $regen = document.getElementById("regen-plan-btn");
   if ($regen) {
