@@ -368,10 +368,13 @@
   .plan-day.past.complete .plan-day-date { color: #6dd5ed; }
   .plan-day.past.incomplete .plan-day-date { color: #ff9b6d; }
   .plan-unit.missing {
-    background: rgba(255,155,109,0.28) !important;
-    color: #ffd1b3;
-    text-decoration: line-through;
+    background: rgba(255,180,80,0.18) !important;
+    color: #ffd9a8;
+    border: 1px dashed rgba(255,180,80,0.5);
+    cursor: pointer;
   }
+  .plan-unit.missing:hover { background: rgba(255,180,80,0.32) !important; }
+  .plan-unit.missing::after { content: " ＋補"; font-size: 10px; opacity: 0.7; }
   .plan-unit.done { opacity: 0.55; }
   .regen-btn {
     display: inline-block;
@@ -4918,7 +4921,7 @@ function renderPlan() {
     date.className = "plan-day-date";
     const offset = dayIdx - todayIdx;
     let dateText = formatPlanDay(offset);
-    if (status) dateText += status.complete ? "  ✓" : "  ⚠";
+    if (status) dateText += status.complete ? "  ✓ 完成" : "  ⏳ 待補";
     date.textContent = dateText;
     row.appendChild(date);
     const units = document.createElement("div");
@@ -4926,11 +4929,19 @@ function renderPlan() {
     for (const u of dayUnits) {
       const tag = document.createElement("span");
       tag.className = "plan-unit";
-      if (status) {
-        if (unitCheckCount(u.subj, u.ui) < u.pass) tag.classList.add("missing");
-        else tag.classList.add("done");
-      }
+      const isMissing = status && unitCheckCount(u.subj, u.ui) < u.pass;
+      if (status) tag.classList.add(isMissing ? "missing" : "done");
       tag.textContent = u.subj + "·" + u.name + (sp.passes > 1 ? " ⓡ" + u.pass : "");
+      // 過去日沒做的 → 點一下補上(補到該輪 pass 數)
+      if (isMissing) {
+        tag.title = "點一下補上這個單元";
+        tag.onclick = () => {
+          for (let i = 0; i < REVIEW_COUNT && unitCheckCount(u.subj, u.ui) < u.pass; i++) {
+            if (!getCheck(u.subj, u.ui, i)) setCheck(u.subj, u.ui, i, true);
+          }
+          renderStudyPlan();
+        };
+      }
       units.appendChild(tag);
     }
     row.appendChild(units);
